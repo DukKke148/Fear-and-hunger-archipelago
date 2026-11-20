@@ -131,14 +131,6 @@ Start from [`examples/Fear & Hunger.yaml`](examples/Fear%20&%20Hunger.yaml). Eve
 ## For developers
 - `apworld/fear_and_hunger/`: the world. Zip the `fear_and_hunger` folder to get the `.apworld`.
 - `plugin/`: the RPG Maker MV plugin.
-- `tools/build_data.py`: builds `data/fh_data.json` from the game's `www/data` folder (your own copy).
-  `tools/build_plugin_data.py` turns it into `ArchipelagoFH_Data.js`:
-  ```
-  python tools/build_data.py <path to www/data> apworld/fear_and_hunger/data/fh_data.json
-  python tools/build_plugin_data.py apworld/fear_and_hunger/data/fh_data.json plugin/ArchipelagoFH_Data.js
-  ```
-- `tests/`: Node.js tests that run the plugin in a simulated RPG Maker engine against a real Archipelago server
-  (`MultiServer.py --server_password test`), for example `node tests/test_plugin.js plugin 38281`.
 
 ## License
 [MIT](LICENSE). Fear & Hunger belongs to its creator. This project only contains code and lists of names and
