@@ -1,0 +1,310 @@
+"""Fear & Hunger (v1.4.1) for Archipelago, model v0.2.
+
+Checks: first entry in each zone, bestiary, bosses, enemy groups, key item pickups, endings.
+Items: unlocks. A received weapon, armor, consumable or book is never given directly: it starts spawning
+in the dungeon (furniture, chests, items on the floor, boss loot) in every new run.
+Key items stay where the game puts them, so the game itself guarantees access to every zone.
+"""
+import json
+import pkgutil
+from collections import defaultdict
+from typing import Any, Dict, List
+
+from BaseClasses import Item, ItemClassification, Location, LocationProgressType, Region, Tutorial
+from worlds.AutoWorld import WebWorld, World
+from worlds.generic.Rules import add_rule
+
+from .options import FearAndHungerOptions, FloorAccess, Logic, LogicDifficulty, RandomizeKeys
+
+EXTRA_SMALL_KEYS = 5  # Small keys sent by the multiworld in 'extra' mode
+
+DATA: Dict[str, Any] = json.loads(pkgutil.get_data(__name__, "data/fh_data.json").decode("utf-8"))
+ITEMS: Dict[str, Dict[str, Any]] = {i["name"]: i for i in DATA["items"]}
+LOCATIONS: Dict[str, Dict[str, Any]] = {loc["name"]: loc for loc in DATA["locations"]}
+TROOPS: Dict[int, Dict[str, Any]] = {t["id"]: t for t in DATA["troops"]}
+GEAR = sorted(n for n, i in ITEMS.items() if i["classification"] == "progression" and i["cat"] == "gear")
+KEY_NAMES = {i["db_id"]: n for n, i in ITEMS.items() if i["cat"] == "key"}
+ACCESS_NAMES = {i["db_id"]: n for n, i in ITEMS.items() if i["cat"] == "access"}  # tier -> item name
+ITEMS_BY_ID = {i["id"]: i for i in DATA["items"]}
+FLOOR_ACCESS_NAMES = {int(f): ITEMS_BY_ID[i]["name"] for f, i in DATA["floor_items"].items()}  # floor -> item
+SMALL_KEY = KEY_NAMES[20]
+
+# Tiers: 1 Part 1 (levels 1-3), 2 Part 2 (4-6), 3 Part 3 (7-8), 4 Ma'habre, 5 End (ancient city, 9-10).
+# Smart logic: unique weapons/armors unlocked needed to count each tier as reachable.
+# Tune these after playing: they are only estimates.
+TIER_COUNT = 5
+TIER_GEAR = {
+    LogicDifficulty.option_relaxed: {1: 0, 2: 6, 3: 10, 4: 14, 5: 18},
+    LogicDifficulty.option_normal: {1: 0, 2: 4, 3: 7, 4: 10, 5: 13},
+    LogicDifficulty.option_strict: {1: 0, 2: 2, 3: 4, 4: 6, 5: 8},
+}
+BOSS_EXTRA = {LogicDifficulty.option_relaxed: 3, LogicDifficulty.option_normal: 2, LogicDifficulty.option_strict: 1}
+
+CLASSIFICATION = {"progression": ItemClassification.progression, "useful": ItemClassification.useful,
+                  "filler": ItemClassification.filler, "trap": ItemClassification.trap}
+
+
+class FearAndHungerItem(Item):
+    game = "Fear & Hunger"
+
+
+class FearAndHungerLocation(Location):
+    game = "Fear & Hunger"
+
+
+class FearAndHungerWeb(WebWorld):
+    tutorials = [Tutorial(
+        "Multiworld Setup Guide",
+        "How to install the Fear & Hunger plugin and connect to a multiworld.",
+        "English", "setup_en.md", "setup/en", ["Julien"],
+    )]
+
+
+class FearAndHungerWorld(World):
+    """
+    Fear & Hunger is a brutal dungeon crawler. In this randomizer your friends unlock the weapons,
+    armors and supplies that can spawn in the dungeon, and you unlock theirs by surviving it.
+    """
+    game = "Fear & Hunger"
+    web = FearAndHungerWeb()
+    options_dataclass = FearAndHungerOptions
+    options: FearAndHungerOptions
+    topology_present = False
+
+    item_name_to_id = {name: i["id"] for name, i in ITEMS.items()}
+    location_name_to_id = {name: loc["id"] for name, loc in LOCATIONS.items()}
+    item_name_groups = {
+        "Gear": set(GEAR),
+        "Weapons": {n for n, i in ITEMS.items() if i["kind"] == "weapon"},
+        "Armors": {n for n, i in ITEMS.items() if i["kind"] == "armor"},
+        "Books": {n for n, i in ITEMS.items() if i["cat"] == "book"},
+        "Consumables": {n for n, i in ITEMS.items() if i["cat"] == "consumable"},
+        "Keys": {n for n, i in ITEMS.items() if i["cat"] == "key"},
+        "Access": {n for n, i in ITEMS.items() if i["cat"] in ("access", "access_floor")},
+    }
+    location_name_groups = {
+        t.capitalize(): {n for n, loc in LOCATIONS.items() if loc["type"] == t}
+        for t in ("zone", "bestiary", "boss", "troop", "key", "ending")
+    }
+    location_name_groups["Other endings"] = {n for n, loc in LOCATIONS.items() if loc["type"] == "ending_extra"}
+
+    # ------------------------------------------------------------------ shuffles
+    def generate_early(self) -> None:
+        opt = self.options
+        # enemy groups: slot troop (where the fight is) -> troop actually fought
+        pools = {1: {"mob"}, 2: {"mob", "boss"}, 3: {"mob", "boss", "companion", "endgame"}}
+        self.troop_map: Dict[int, int] = {}
+        if opt.enemy_shuffle.value:
+            pool = sorted(t["id"] for t in DATA["troops"]
+                          if t["cls"] in pools[opt.enemy_shuffle.value] and not t["unsafe"])
+            shuffled = pool[:]
+            self.random.shuffle(shuffled)
+            self.troop_map = dict(zip(pool, shuffled))
+        # tier where each troop is fought after the shuffle
+        self.troop_tier: Dict[int, int] = {}
+        self.troop_floor: Dict[int, int] = {}
+        for t in DATA["troops"]:
+            self.troop_tier[t["id"]] = t["tier"]
+            self.troop_floor[t["id"]] = t.get("floor", 1)
+        for slot, actual in self.troop_map.items():
+            # a troop is as hard as it naturally is, and as deep as the place it now appears
+            self.troop_tier[actual] = max(TROOPS[slot]["tier"], TROOPS[actual]["tier"])
+            self.troop_floor[actual] = max(TROOPS[slot].get("floor", 1), TROOPS[actual].get("floor", 1))
+        # weapons / armors
+        self.weapon_map: Dict[str, Dict[str, int]] = {"w": {}, "a": {}}
+        if opt.weapon_shuffle.value:
+            ws = DATA["shuffle_weapons"][:]
+            self.random.shuffle(ws)
+            self.weapon_map["w"] = {str(a): b for a, b in zip(DATA["shuffle_weapons"], ws)}
+            by_slot = defaultdict(list)
+            for i in ITEMS.values():
+                if i["kind"] == "armor" and i["db_id"] in DATA["shuffle_armors"]:
+                    by_slot[i["etype"]].append(i["db_id"])
+            for ids in by_slot.values():
+                ids.sort()
+                s = ids[:]
+                self.random.shuffle(s)
+                self.weapon_map["a"].update({str(a): b for a, b in zip(ids, s)})
+
+    # ------------------------------------------------------------------ locations
+    def _location_floor(self, loc: Dict[str, Any]) -> int:
+        t = loc["type"]
+        if t == "troop":
+            return self.troop_floor[loc["troop"]]
+        if t in ("bestiary", "boss"):
+            fl = [self.troop_floor[tr["id"]] for tr in DATA["troops"] if loc["creature"] in tr["creatures"]]
+            return min(fl) if fl else loc["floor"]
+        return loc["floor"]
+
+    def _steps(self) -> List[tuple]:
+        """Ordered logic regions (name, tier, access item or None): the 12 floors, or the 5 parts."""
+        mode = self.options.floor_access.value
+        if mode == FloorAccess.option_per_floor:
+            return [(DATA["floors"][str(f)], DATA["floor_tier"][str(f)], FLOOR_ACCESS_NAMES.get(f))
+                    for f in sorted(int(k) for k in DATA["floors"])]
+        return [(DATA["tiers"][str(t)], t, ACCESS_NAMES.get(t) if mode else None) for t in range(1, TIER_COUNT + 1)]
+
+    def _location_tier(self, loc: Dict[str, Any]) -> int:
+        t = loc["type"]
+        if t == "troop":
+            return self.troop_tier[loc["troop"]]
+        if t in ("bestiary", "boss"):
+            tiers = [self.troop_tier[tr["id"]] for tr in DATA["troops"] if loc["creature"] in tr["creatures"]]
+            return min(tiers) if tiers else loc["tier"]
+        return loc["tier"]
+
+    def create_regions(self) -> None:
+        menu = Region("Menu", self.player, self.multiworld)
+        steps = self._steps()
+        regions = [Region(name, self.player, self.multiworld) for name, _, _ in steps]
+        self.multiworld.regions += [menu] + regions
+        menu.connect(regions[0])
+        smart = self.options.logic.value == Logic.option_smart
+        need = TIER_GEAR[self.options.logic_difficulty.value]
+        for i in range(1, len(steps)):
+            name, tier, item = steps[i]
+            n = need[tier]
+            def rule(state, n=n, item=item):
+                if item and not state.has(item, self.player):
+                    return False
+                return not smart or state.has_from_list_unique(GEAR, self.player, n)
+            regions[i - 1].connect(regions[i], f"Descend to {name}", rule if (smart or item) else None)
+        per_floor = self.options.floor_access.value == FloorAccess.option_per_floor
+        extra = BOSS_EXTRA[self.options.logic_difficulty.value]
+        self.location_count = 0
+        ending_place: Dict[str, Any] = {}  # ending name -> (region, tier) of its check
+        for loc in DATA["locations"]:
+            if loc["type"] == "troop" and not self.options.troop_checks:
+                continue
+            if loc["type"] == "skill" and not self.options.skill_checks:
+                continue
+            tier = self._location_tier(loc)
+            if per_floor:
+                step = self._location_floor(loc) - 1
+                tier = max(tier, steps[step][1])
+            else:
+                step = tier - 1
+            if loc["type"] == "skill" and self.options.spawn_mode.value != 0:
+                step = len(steps) - 1  # the scroll can spawn at any depth: count on it only at the end
+                tier = steps[step][1]
+            region = regions[step]
+            ending_place[loc["name"]] = (region, tier)
+            location = FearAndHungerLocation(self.player, loc["name"], loc["id"], region)
+            region.locations.append(location)
+            self.location_count += 1
+            if self.options.randomize_keys.value == RandomizeKeys.option_full and (loc["keys"] or loc["small_keys"]):
+                keys = [KEY_NAMES[k] for k in loc["keys"]]
+                small = loc["small_keys"]
+                add_rule(location, lambda state, keys=keys, small=small:
+                         state.has_all(keys, self.player) and (not small or state.has(SMALL_KEY, self.player, small)))
+            if loc["type"] == "skill":
+                scroll = ITEMS_BY_ID[loc["scroll"]]["name"]
+                add_rule(location, lambda state, scroll=scroll: state.has(scroll, self.player))
+            if smart and loc["type"] in ("boss", "ending", "ending_extra"):
+                n = min(len(GEAR), need[tier] + extra)
+                add_rule(location, lambda state, n=n: state.has_from_list_unique(GEAR, self.player, n))
+            if loc["type"] in ("ending", "ending_extra") and not self.options.endings_hold_progression:
+                location.progress_type = LocationProgressType.EXCLUDED
+        # goal events, one per ending
+        for loc in DATA["locations"]:
+            if loc["type"] == "ending":
+                region, tier = ending_place[loc["name"]]
+                event = FearAndHungerLocation(self.player, loc["name"] + " (goal)", None, region)
+                event.place_locked_item(FearAndHungerItem(loc["name"] + " reached", ItemClassification.progression,
+                                                          None, self.player))
+                if smart:
+                    n = min(len(GEAR), need[tier] + extra)
+                    add_rule(event, lambda state, n=n: state.has_from_list_unique(GEAR, self.player, n))
+                if self.options.randomize_keys.value == RandomizeKeys.option_full:
+                    keys = [KEY_NAMES[k] for k in loc["keys"]]
+                    small = loc["small_keys"]
+                    add_rule(event, lambda state, keys=keys, small=small:
+                             state.has_all(keys, self.player) and state.has(SMALL_KEY, self.player, small))
+                region.locations.append(event)
+
+    # ------------------------------------------------------------------ items
+    def create_items(self) -> None:
+        total = self.location_count
+        # keys and floor access first: they are what the logic needs
+        pool = []
+        if self.options.randomize_keys.value == RandomizeKeys.option_full:
+            for i in ITEMS.values():
+                if i["cat"] == "key":
+                    pool += [self.create_item(i["name"]) for _ in range(i["copies"])]
+        elif self.options.randomize_keys.value == RandomizeKeys.option_extra:
+            # bonus keys: the game still has every key at its usual spot, so they are not progression
+            for i in ITEMS.values():
+                if i["cat"] == "key":
+                    copies = EXTRA_SMALL_KEYS if i["db_id"] == 20 else 1
+                    pool += [self.create_item(i["name"], ItemClassification.useful) for _ in range(copies)]
+        if self.options.floor_access.value == FloorAccess.option_per_part:
+            pool += [self.create_item(n) for n in ACCESS_NAMES.values()]
+        elif self.options.floor_access.value == FloorAccess.option_per_floor:
+            pool += [self.create_item(n) for n in FLOOR_ACCESS_NAMES.values()]
+        total -= len(pool)
+        unlocks = [i for i in ITEMS.values() if i["cat"] in ("gear", "book", "consumable")]
+        uniques = sorted(unlocks, key=lambda i: ({"gear": 0, "book": 1, "consumable": 2}[i["cat"]], i["id"]))
+        self.extra_base: List[int] = []
+        if total < len(uniques):
+            # not enough checks for every unlock: the least important consumables become always available
+            keep, dropped = uniques[:total], uniques[total:]
+            self.extra_base = [i["id"] for i in dropped]
+            uniques = keep
+        first = len(pool)
+        skill_scrolls = {i["name"] for i in ITEMS.values() if i.get("teaches")} if self.options.skill_checks else set()
+        pool += [self.create_item(i["name"], ItemClassification.progression if i["name"] in skill_scrolls else None)
+                 for i in uniques]
+        total += first
+        # second copy of each gear piece (a second guaranteed spawn per run), then supplies
+        for i in uniques:
+            if len(pool) >= total:
+                break
+            if i["cat"] == "gear":
+                pool.append(self.create_item(i["name"], ItemClassification.useful))
+        supplies = [i["name"] for i in ITEMS.values() if i["cat"] in ("consumable", "book")]
+        # traps replace a share of the supplies
+        weights = {f"Trap: {k}": v for k, v in self.options.trap_weights.value.items() if v > 0}
+        n_traps = (total - len(pool)) * self.options.trap_percentage.value // 100 if weights else 0
+        if n_traps:
+            names = sorted(weights)
+            pool += [self.create_item(n) for n in self.random.choices(names, [weights[n] for n in names], k=n_traps)]
+        while len(pool) < total:
+            pool.append(self.create_item(self.random.choice(supplies)))
+        self.multiworld.itempool += pool
+
+    def set_rules(self) -> None:
+        events = [loc["name"] + " reached" for loc in DATA["locations"] if loc["type"] == "ending"]
+        required = sorted(self.options.required_endings.value)
+        if required:
+            needed = [f"Ending {e} reached" for e in required]
+            self.multiworld.completion_condition[self.player] = lambda state: state.has_all(needed, self.player)
+        else:
+            n = self.options.endings_required.value
+            self.multiworld.completion_condition[self.player] = \
+                lambda state: sum(state.has(e, self.player) for e in events) >= n
+
+    def create_item(self, name: str, classification: ItemClassification = None) -> FearAndHungerItem:
+        data = ITEMS[name]
+        return FearAndHungerItem(name, classification or CLASSIFICATION[data["classification"]], data["id"],
+                                 self.player)
+
+    def get_filler_item_name(self) -> str:
+        return self.random.choice([i["name"] for i in ITEMS.values() if i["cat"] == "consumable"])
+
+    def fill_slot_data(self) -> Dict[str, Any]:
+        return {
+            "data_version": DATA["data_version"],
+            "endings_required": self.options.endings_required.value,
+            "required_endings": sorted(self.options.required_endings.value),
+            "auto_release_collect": bool(self.options.auto_release_collect.value),
+            "randomize_keys": self.options.randomize_keys.value,  # 0 off, 1 extra, 2 full
+            "skill_checks": bool(self.options.skill_checks.value),
+            "floor_access": self.options.floor_access.value,  # 0 off, 1 per part, 2 per floor
+            "spawn_mode": self.options.spawn_mode.value,
+            "troop_map": {str(k): v for k, v in self.troop_map.items() if k != v},
+            "weapon_shuffle": self.options.weapon_shuffle.value,
+            "weapon_map": self.weapon_map,
+            "extra_base": self.extra_base,  # AP item ids that are always available
+            "death_link": bool(self.options.death_link.value),
+        }
+
