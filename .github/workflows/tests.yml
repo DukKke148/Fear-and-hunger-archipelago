@@ -16,14 +16,14 @@ jobs:
       matrix:
         archipelago: ["0.6.7", "0.6.8"]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Get Archipelago ${{ matrix.archipelago }}
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           repository: ArchipelagoMW/Archipelago
           ref: ${{ matrix.archipelago }}
           path: archipelago
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.12"
       - name: Install Archipelago
@@ -55,8 +55,8 @@ jobs:
     name: game plugin
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: "20"
       - name: Syntax
