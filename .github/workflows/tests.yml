@@ -1,0 +1,63 @@
+# Runs on every push and pull request. Nothing here needs a copy of the game: the tests that read the game's
+# own files (tests/test_*.js except test_data_consistency.js) are run by hand, see tests/README.md.
+name: Tests
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  apworld:
+    name: apworld (Archipelago ${{ matrix.archipelago }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        archipelago: ["0.6.7", "0.6.8"]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Get Archipelago ${{ matrix.archipelago }}
+        uses: actions/checkout@v4
+        with:
+          repository: ArchipelagoMW/Archipelago
+          ref: ${{ matrix.archipelago }}
+          path: archipelago
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install Archipelago
+        working-directory: archipelago
+        run: |
+          python -m pip install --upgrade pip
+          python ModuleUpdate.py --yes
+          python -m pip install pytest lupa pillow
+      - name: Add the world
+        run: cp -r apworld/fear_and_hunger archipelago/worlds/fear_and_hunger
+      - name: World tests (options, hardcore, genocide, fill)
+        working-directory: archipelago
+        run: python -m pytest worlds/fear_and_hunger/test -q
+      - name: Generate with the example yaml
+        working-directory: archipelago
+        run: |
+          mkdir -p ci/players
+          cp "../examples/Fear & Hunger.yaml" ci/players/
+          python Generate.py --player_files_path ci/players --outputpath ci/out < /dev/null
+          ls ci/out/*.zip
+      - name: PopTracker pack logic matches the apworld
+        run: |
+          python tools/build_poptracker.py apworld/fear_and_hunger/data/fh_data.json apworld/fear_and_hunger/__init__.py ci_pack
+          cd archipelago && python ../tests/test_poptracker_logic.py ../ci_pack 6
+
+  plugin:
+    name: game plugin
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Syntax
+        run: node --check plugin/ArchipelagoFH.js && node --check plugin/ArchipelagoFH_Data.js
+      - name: Plugin loads and matches the apworld data
+        run: node tests/test_data_consistency.js plugin apworld/fear_and_hunger/data/fh_data.json

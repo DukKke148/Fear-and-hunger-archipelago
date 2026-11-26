@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+*.apworld
+/www/
+/release/
+/data/

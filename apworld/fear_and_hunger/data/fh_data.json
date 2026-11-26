@@ -1,13 +1,13 @@
 {
  "game": "Fear & Hunger",
  "game_version": "1.4.1",
- "data_version": 15,
+ "data_version": 16,
  "tiers": {
-  "1": "Partie 1",
-  "2": "Partie 2",
-  "3": "Partie 3",
+  "1": "Part 1",
+  "2": "Part 2",
+  "3": "Part 3",
   "4": "Ma'habre",
-  "5": "Fin"
+  "5": "End"
  },
  "map_depth": {
   "1": 1,
@@ -7622,7 +7622,6 @@
   4,
   7,
   8,
-  9,
   12,
   13,
   14,
@@ -10493,6 +10492,20 @@
   "184:305",
   "184:338"
  ],
+ "campfire_events": [
+  "1:55",
+  "22:130",
+  "29:55",
+  "51:55",
+  "75:200",
+  "114:117",
+  "160:1",
+  "160:110",
+  "160:117",
+  "163:200",
+  "183:55",
+  "185:117"
+ ],
  "items": [
   {
    "id": 7460002001,
@@ -10752,7 +10765,7 @@
    "power": 40,
    "native_tier": 2,
    "priced": false,
-   "power_rank": 0.657
+   "power_rank": 0.647
   },
   {
    "id": 7460003002,
@@ -10765,7 +10778,7 @@
    "power": 10,
    "native_tier": 4,
    "priced": false,
-   "power_rank": 0.286
+   "power_rank": 0.265
   },
   {
    "id": 7460003004,
@@ -10778,7 +10791,7 @@
    "power": 40,
    "native_tier": null,
    "priced": false,
-   "power_rank": 0.686
+   "power_rank": 0.676
   },
   {
    "id": 7460003007,
@@ -10791,7 +10804,7 @@
    "power": 10,
    "native_tier": null,
    "priced": false,
-   "power_rank": 0.314
+   "power_rank": 0.294
   },
   {
    "id": 7460003008,
@@ -10804,20 +10817,7 @@
    "power": 20,
    "native_tier": null,
    "priced": false,
-   "power_rank": 0.429
-  },
-  {
-   "id": 7460003009,
-   "name": "Cloth cape",
-   "kind": "armor",
-   "db_id": 9,
-   "cat": "gear",
-   "etype": 5,
-   "classification": "useful",
-   "power": 0,
-   "native_tier": null,
-   "priced": false,
-   "power_rank": 0.0
+   "power_rank": 0.412
   },
   {
    "id": 7460003012,
@@ -10830,7 +10830,7 @@
    "power": 40,
    "native_tier": 2,
    "priced": false,
-   "power_rank": 0.714
+   "power_rank": 0.706
   },
   {
    "id": 7460003013,
@@ -10843,7 +10843,7 @@
    "power": 34,
    "native_tier": 2,
    "priced": false,
-   "power_rank": 0.571
+   "power_rank": 0.559
   },
   {
    "id": 7460003014,
@@ -10869,7 +10869,7 @@
    "power": 10,
    "native_tier": 1,
    "priced": false,
-   "power_rank": 0.343
+   "power_rank": 0.324
   },
   {
    "id": 7460003017,
@@ -10882,7 +10882,7 @@
    "power": 30,
    "native_tier": null,
    "priced": false,
-   "power_rank": 0.543
+   "power_rank": 0.529
   },
   {
    "id": 7460003018,
@@ -10895,7 +10895,7 @@
    "power": 40,
    "native_tier": 2,
    "priced": false,
-   "power_rank": 0.743
+   "power_rank": 0.735
   },
   {
    "id": 7460003021,
@@ -10908,7 +10908,7 @@
    "power": 20,
    "native_tier": 1,
    "priced": false,
-   "power_rank": 0.457
+   "power_rank": 0.441
   },
   {
    "id": 7460003022,
@@ -10921,7 +10921,7 @@
    "power": 20,
    "native_tier": 1,
    "priced": false,
-   "power_rank": 0.486
+   "power_rank": 0.471
   },
   {
    "id": 7460003023,
@@ -10934,7 +10934,7 @@
    "power": 34,
    "native_tier": 1,
    "priced": false,
-   "power_rank": 0.6
+   "power_rank": 0.588
   },
   {
    "id": 7460003024,
@@ -10947,7 +10947,7 @@
    "power": 40,
    "native_tier": null,
    "priced": false,
-   "power_rank": 0.771
+   "power_rank": 0.765
   },
   {
    "id": 7460003025,
@@ -10960,7 +10960,7 @@
    "power": 60,
    "native_tier": 1,
    "priced": false,
-   "power_rank": 0.886
+   "power_rank": 0.882
   },
   {
    "id": 7460003031,
@@ -10973,7 +10973,7 @@
    "power": 50,
    "native_tier": 1,
    "priced": false,
-   "power_rank": 0.857
+   "power_rank": 0.853
   },
   {
    "id": 7460003033,
@@ -10999,7 +10999,7 @@
    "power": 60,
    "native_tier": 5,
    "priced": false,
-   "power_rank": 0.914
+   "power_rank": 0.912
   },
   {
    "id": 7460003044,
@@ -11012,7 +11012,7 @@
    "power": 10,
    "native_tier": 5,
    "priced": false,
-   "power_rank": 0.371
+   "power_rank": 0.353
   },
   {
    "id": 7460003046,
@@ -11025,7 +11025,7 @@
    "power": 60,
    "native_tier": 5,
    "priced": false,
-   "power_rank": 0.943
+   "power_rank": 0.941
   },
   {
    "id": 7460003048,
@@ -11038,7 +11038,7 @@
    "power": 10,
    "native_tier": null,
    "priced": false,
-   "power_rank": 0.4
+   "power_rank": 0.382
   },
   {
    "id": 7460003056,
@@ -11051,7 +11051,7 @@
    "power": 44,
    "native_tier": 2,
    "priced": false,
-   "power_rank": 0.829
+   "power_rank": 0.824
   },
   {
    "id": 7460003057,
@@ -11064,7 +11064,7 @@
    "power": 38,
    "native_tier": 2,
    "priced": false,
-   "power_rank": 0.629
+   "power_rank": 0.618
   },
   {
    "id": 7460003020,
@@ -11077,7 +11077,7 @@
    "power": 0,
    "native_tier": 2,
    "priced": false,
-   "power_rank": 0.029
+   "power_rank": 0.0
   },
   {
    "id": 7460003026,
@@ -11090,7 +11090,7 @@
    "power": 20,
    "native_tier": 4,
    "priced": false,
-   "power_rank": 0.514
+   "power_rank": 0.5
   },
   {
    "id": 7460003027,
@@ -11103,7 +11103,7 @@
    "power": 0,
    "native_tier": 4,
    "priced": false,
-   "power_rank": 0.057
+   "power_rank": 0.029
   },
   {
    "id": 7460003028,
@@ -11116,7 +11116,7 @@
    "power": 0,
    "native_tier": null,
    "priced": false,
-   "power_rank": 0.086
+   "power_rank": 0.059
   },
   {
    "id": 7460003029,
@@ -11129,7 +11129,7 @@
    "power": 0,
    "native_tier": 1,
    "priced": false,
-   "power_rank": 0.114
+   "power_rank": 0.088
   },
   {
    "id": 7460003030,
@@ -11142,7 +11142,7 @@
    "power": 0,
    "native_tier": null,
    "priced": false,
-   "power_rank": 0.143
+   "power_rank": 0.118
   },
   {
    "id": 7460003047,
@@ -11155,7 +11155,7 @@
    "power": 40,
    "native_tier": 4,
    "priced": false,
-   "power_rank": 0.8
+   "power_rank": 0.794
   },
   {
    "id": 7460003050,
@@ -11168,7 +11168,7 @@
    "power": 0,
    "native_tier": null,
    "priced": false,
-   "power_rank": 0.171
+   "power_rank": 0.147
   },
   {
    "id": 7460003051,
@@ -11181,7 +11181,7 @@
    "power": 0,
    "native_tier": null,
    "priced": false,
-   "power_rank": 0.2
+   "power_rank": 0.176
   },
   {
    "id": 7460003052,
@@ -11194,7 +11194,7 @@
    "power": 0,
    "native_tier": null,
    "priced": false,
-   "power_rank": 0.229
+   "power_rank": 0.206
   },
   {
    "id": 7460003058,
@@ -11207,7 +11207,7 @@
    "power": 0,
    "native_tier": 2,
    "priced": false,
-   "power_rank": 0.257
+   "power_rank": 0.235
   },
   {
    "id": 7460001011,
@@ -12660,7 +12660,9 @@
     202
    ],
    "small_keys": 7,
-   "floor": 1
+   "explosive": false,
+   "floor": 1,
+   "zone": "Level 1 - Backyard"
   },
   {
    "id": 7460100004,
@@ -12673,7 +12675,9 @@
    ],
    "keys": [],
    "small_keys": 7,
-   "floor": 1
+   "explosive": false,
+   "floor": 1,
+   "zone": "Level 1 - Courtyard"
   },
   {
    "id": 7460100001,
@@ -12688,7 +12692,9 @@
    ],
    "keys": [],
    "small_keys": 0,
-   "floor": 1
+   "explosive": false,
+   "floor": 1,
+   "zone": "Level 1 - Entrance"
   },
   {
    "id": 7460100014,
@@ -12703,7 +12709,9 @@
     202
    ],
    "small_keys": 7,
-   "floor": 1
+   "explosive": true,
+   "floor": 1,
+   "zone": "Level 1 - Hidden backyard"
   },
   {
    "id": 7460100003,
@@ -12718,7 +12726,9 @@
    ],
    "keys": [],
    "small_keys": 7,
-   "floor": 1
+   "explosive": false,
+   "floor": 1,
+   "zone": "Level 1 - Inner hall"
   },
   {
    "id": 7460100076,
@@ -12730,7 +12740,9 @@
    ],
    "keys": [],
    "small_keys": 0,
-   "floor": 1
+   "explosive": false,
+   "floor": 1,
+   "zone": "Level 1 - Stairway"
   },
   {
    "id": 7460100077,
@@ -12743,7 +12755,9 @@
    ],
    "keys": [],
    "small_keys": 0,
-   "floor": 2
+   "explosive": false,
+   "floor": 2,
+   "zone": "Level 2 - Basement"
   },
   {
    "id": 7460100005,
@@ -12755,7 +12769,9 @@
    ],
    "keys": [],
    "small_keys": 7,
-   "floor": 2
+   "explosive": false,
+   "floor": 2,
+   "zone": "Level 2 - Blood pit"
   },
   {
    "id": 7460100007,
@@ -12772,7 +12788,9 @@
     202
    ],
    "small_keys": 7,
-   "floor": 2
+   "explosive": false,
+   "floor": 2,
+   "zone": "Level 2 - Shit pit"
   },
   {
    "id": 7460100018,
@@ -12789,7 +12807,9 @@
     202
    ],
    "small_keys": 7,
-   "floor": 2
+   "explosive": true,
+   "floor": 2,
+   "zone": "Level 2 - Thicket"
   },
   {
    "id": 7460100124,
@@ -12803,7 +12823,9 @@
     148
    ],
    "small_keys": 0,
-   "floor": 2
+   "explosive": false,
+   "floor": 2,
+   "zone": "Flip side - Basement"
   },
   {
    "id": 7460100075,
@@ -12817,7 +12839,9 @@
     148
    ],
    "small_keys": 0,
-   "floor": 3
+   "explosive": false,
+   "floor": 3,
+   "zone": "Level 3 - Basement"
   },
   {
    "id": 7460100006,
@@ -12832,7 +12856,9 @@
    ],
    "keys": [],
    "small_keys": 7,
-   "floor": 3
+   "explosive": false,
+   "floor": 3,
+   "zone": "Level 3 - Prisons"
   },
   {
    "id": 7460100163,
@@ -12846,7 +12872,9 @@
     148
    ],
    "small_keys": 0,
-   "floor": 3
+   "explosive": false,
+   "floor": 3,
+   "zone": "Level 3 - Silent corridor"
   },
   {
    "id": 7460100019,
@@ -12863,7 +12891,9 @@
     202
    ],
    "small_keys": 7,
-   "floor": 3
+   "explosive": true,
+   "floor": 3,
+   "zone": "Level 3 - Thicket"
   },
   {
    "id": 7460100008,
@@ -12876,7 +12906,9 @@
    ],
    "keys": [],
    "small_keys": 15,
-   "floor": 4
+   "explosive": false,
+   "floor": 4,
+   "zone": "Level 4 - Caverns"
   },
   {
    "id": 7460100021,
@@ -12892,7 +12924,9 @@
     119
    ],
    "small_keys": 15,
-   "floor": 4
+   "explosive": true,
+   "floor": 4,
+   "zone": "Level 4 - Thicket"
   },
   {
    "id": 7460100141,
@@ -12907,7 +12941,9 @@
     119
    ],
    "small_keys": 15,
-   "floor": 5
+   "explosive": false,
+   "floor": 5,
+   "zone": "Level 5 - Deeper thicket"
   },
   {
    "id": 7460100011,
@@ -12924,7 +12960,9 @@
     2
    ],
    "small_keys": 15,
-   "floor": 5
+   "explosive": false,
+   "floor": 5,
+   "zone": "Level 5 - Mines"
   },
   {
    "id": 7460100060,
@@ -12946,7 +12984,9 @@
     202
    ],
    "small_keys": 15,
-   "floor": 5
+   "explosive": true,
+   "floor": 5,
+   "zone": "Level 5 - Thicket"
   },
   {
    "id": 7460100012,
@@ -12958,7 +12998,9 @@
    ],
    "keys": [],
    "small_keys": 15,
-   "floor": 5
+   "explosive": false,
+   "floor": 5,
+   "zone": "Lizard lair"
   },
   {
    "id": 7460100022,
@@ -12975,7 +13017,9 @@
     199
    ],
    "small_keys": 15,
-   "floor": 6
+   "explosive": false,
+   "floor": 6,
+   "zone": "Huts village"
   },
   {
    "id": 7460100017,
@@ -12992,7 +13036,9 @@
     199
    ],
    "small_keys": 15,
-   "floor": 6
+   "explosive": false,
+   "floor": 6,
+   "zone": "Level 6 - Altar of darkness"
   },
   {
    "id": 7460100016,
@@ -13009,7 +13055,9 @@
     119
    ],
    "small_keys": 15,
-   "floor": 6
+   "explosive": false,
+   "floor": 6,
+   "zone": "Level 6 - Mines"
   },
   {
    "id": 7460100024,
@@ -13023,7 +13071,9 @@
     48
    ],
    "small_keys": 16,
-   "floor": 7
+   "explosive": false,
+   "floor": 7,
+   "zone": "Level 7 - Catacombs"
   },
   {
    "id": 7460100121,
@@ -13040,7 +13090,9 @@
     180
    ],
    "small_keys": 16,
-   "floor": 9
+   "explosive": false,
+   "floor": 9,
+   "zone": "Golden Temple"
   },
   {
    "id": 7460100125,
@@ -13058,7 +13110,9 @@
     180
    ],
    "small_keys": 16,
-   "floor": 9
+   "explosive": false,
+   "floor": 9,
+   "zone": "Golden Temple - Inside"
   },
   {
    "id": 7460100104,
@@ -13074,7 +13128,9 @@
     119
    ],
    "small_keys": 16,
-   "floor": 9
+   "explosive": false,
+   "floor": 9,
+   "zone": "Grand library"
   },
   {
    "id": 7460100105,
@@ -13090,7 +13146,9 @@
     119
    ],
    "small_keys": 16,
-   "floor": 9
+   "explosive": false,
+   "floor": 9,
+   "zone": "Grand library - Inner sanctum"
   },
   {
    "id": 7460100093,
@@ -13107,7 +13165,9 @@
     199
    ],
    "small_keys": 16,
-   "floor": 8
+   "explosive": false,
+   "floor": 8,
+   "zone": "Level 8 - The gauntlet"
   },
   {
    "id": 7460100080,
@@ -13122,7 +13182,9 @@
     119
    ],
    "small_keys": 16,
-   "floor": 9
+   "explosive": false,
+   "floor": 9,
+   "zone": "Ma'habre - Back alleys"
   },
   {
    "id": 7460100100,
@@ -13137,7 +13199,9 @@
     119
    ],
    "small_keys": 16,
-   "floor": 9
+   "explosive": false,
+   "floor": 9,
+   "zone": "Ma'habre - Center square"
   },
   {
    "id": 7460100027,
@@ -13153,7 +13217,9 @@
     119
    ],
    "small_keys": 16,
-   "floor": 9
+   "explosive": false,
+   "floor": 9,
+   "zone": "Ma'habre - Downtown"
   },
   {
    "id": 7460100087,
@@ -13169,7 +13235,9 @@
     119
    ],
    "small_keys": 16,
-   "floor": 9
+   "explosive": false,
+   "floor": 9,
+   "zone": "Ma'habre - Inside"
   },
   {
    "id": 7460100101,
@@ -13184,7 +13252,9 @@
     119
    ],
    "small_keys": 16,
-   "floor": 9
+   "explosive": false,
+   "floor": 9,
+   "zone": "Ma'habre - Passageway"
   },
   {
    "id": 7460100106,
@@ -13199,7 +13269,9 @@
     119
    ],
    "small_keys": 16,
-   "floor": 9
+   "explosive": false,
+   "floor": 9,
+   "zone": "Ma'habre - Pit of enlightenment"
   },
   {
    "id": 7460100103,
@@ -13214,7 +13286,9 @@
     119
    ],
    "small_keys": 16,
-   "floor": 9
+   "explosive": false,
+   "floor": 9,
+   "zone": "Ma'habre - Temple district"
   },
   {
    "id": 7460100150,
@@ -13229,7 +13303,9 @@
     119
    ],
    "small_keys": 16,
-   "floor": 9
+   "explosive": false,
+   "floor": 9,
+   "zone": "Ma'habre - The Tomb of the Gods"
   },
   {
    "id": 7460100102,
@@ -13244,7 +13320,9 @@
     119
    ],
    "small_keys": 16,
-   "floor": 9
+   "explosive": false,
+   "floor": 9,
+   "zone": "Ma'habre - The Tower of Endless"
   },
   {
    "id": 7460100026,
@@ -13259,7 +13337,9 @@
     119
    ],
    "small_keys": 16,
-   "floor": 9
+   "explosive": false,
+   "floor": 9,
+   "zone": "Ma'habre - The bridge"
   },
   {
    "id": 7460100153,
@@ -13274,7 +13354,9 @@
     119
    ],
    "small_keys": 16,
-   "floor": 9
+   "explosive": false,
+   "floor": 9,
+   "zone": "Ma'habre - Underground cave"
   },
   {
    "id": 7460100090,
@@ -13299,7 +13381,9 @@
     202
    ],
    "small_keys": 16,
-   "floor": 9
+   "explosive": false,
+   "floor": 9,
+   "zone": "Ma'habre 1 - The bridge"
   },
   {
    "id": 7460100078,
@@ -13315,7 +13399,9 @@
     119
    ],
    "small_keys": 16,
-   "floor": 9
+   "explosive": false,
+   "floor": 9,
+   "zone": "Temple of Torment - Level 1"
   },
   {
    "id": 7460100079,
@@ -13336,7 +13422,9 @@
     119
    ],
    "small_keys": 16,
-   "floor": 9
+   "explosive": false,
+   "floor": 9,
+   "zone": "Temple of Torment - Level 2"
   },
   {
    "id": 7460100110,
@@ -13352,7 +13440,9 @@
     119
    ],
    "small_keys": 16,
-   "floor": 11
+   "explosive": false,
+   "floor": 11,
+   "zone": "Ancient city - Back alleys"
   },
   {
    "id": 7460100109,
@@ -13367,7 +13457,9 @@
     119
    ],
    "small_keys": 16,
-   "floor": 11
+   "explosive": false,
+   "floor": 11,
+   "zone": "Ancient city - Center square"
   },
   {
    "id": 7460100111,
@@ -13382,7 +13474,9 @@
     119
    ],
    "small_keys": 16,
-   "floor": 11
+   "explosive": false,
+   "floor": 11,
+   "zone": "Ancient city - Downtown"
   },
   {
    "id": 7460100114,
@@ -13398,7 +13492,9 @@
     119
    ],
    "small_keys": 16,
-   "floor": 11
+   "explosive": false,
+   "floor": 11,
+   "zone": "Ancient city - Inside"
   },
   {
    "id": 7460100155,
@@ -13413,7 +13509,9 @@
     119
    ],
    "small_keys": 16,
-   "floor": 11
+   "explosive": false,
+   "floor": 11,
+   "zone": "Ancient city - Old passage"
   },
   {
    "id": 7460100108,
@@ -13428,7 +13526,9 @@
     119
    ],
    "small_keys": 16,
-   "floor": 11
+   "explosive": false,
+   "floor": 11,
+   "zone": "Ancient city - Passageway"
   },
   {
    "id": 7460100118,
@@ -13443,7 +13543,9 @@
     119
    ],
    "small_keys": 16,
-   "floor": 11
+   "explosive": false,
+   "floor": 11,
+   "zone": "Ancient city - Pit of enlightenment"
   },
   {
    "id": 7460100113,
@@ -13458,7 +13560,9 @@
     119
    ],
    "small_keys": 16,
-   "floor": 11
+   "explosive": false,
+   "floor": 11,
+   "zone": "Ancient city - Temple district"
   },
   {
    "id": 7460100148,
@@ -13473,7 +13577,9 @@
     119
    ],
    "small_keys": 16,
-   "floor": 11
+   "explosive": false,
+   "floor": 11,
+   "zone": "Ancient city - The Tomb of the Gods"
   },
   {
    "id": 7460100112,
@@ -13488,7 +13594,9 @@
     119
    ],
    "small_keys": 16,
-   "floor": 11
+   "explosive": false,
+   "floor": 11,
+   "zone": "Ancient city - The Tower of Endless"
   },
   {
    "id": 7460100154,
@@ -13504,7 +13612,9 @@
     188
    ],
    "small_keys": 16,
-   "floor": 11
+   "explosive": false,
+   "floor": 11,
+   "zone": "Ancient city - The bridge"
   },
   {
    "id": 7460100143,
@@ -13519,7 +13629,9 @@
     119
    ],
    "small_keys": 16,
-   "floor": 11
+   "explosive": false,
+   "floor": 11,
+   "zone": "Ancient city - Underground cave"
   },
   {
    "id": 7460100144,
@@ -13534,7 +13646,9 @@
     119
    ],
    "small_keys": 16,
-   "floor": 11
+   "explosive": false,
+   "floor": 11,
+   "zone": "Grand hall"
   },
   {
    "id": 7460100137,
@@ -13549,7 +13663,9 @@
     119
    ],
    "small_keys": 16,
-   "floor": 11
+   "explosive": false,
+   "floor": 11,
+   "zone": "Highlands"
   },
   {
    "id": 7460100142,
@@ -13566,7 +13682,9 @@
     199
    ],
    "small_keys": 16,
-   "floor": 10
+   "explosive": false,
+   "floor": 10,
+   "zone": "Level 9"
   },
   {
    "id": 7460100065,
@@ -13584,7 +13702,9 @@
     199
    ],
    "small_keys": 16,
-   "floor": 10
+   "explosive": false,
+   "floor": 10,
+   "zone": "Level 9 - The gauntlet"
   },
   {
    "id": 7460100136,
@@ -13599,7 +13719,9 @@
     119
    ],
    "small_keys": 16,
-   "floor": 11
+   "explosive": false,
+   "floor": 11,
+   "zone": "Oldegård - House"
   },
   {
    "id": 7460100135,
@@ -13614,7 +13736,9 @@
     119
    ],
    "small_keys": 16,
-   "floor": 11
+   "explosive": false,
+   "floor": 11,
+   "zone": "Oldegård forests"
   },
   {
    "id": 7460100063,
@@ -13630,7 +13754,9 @@
     119
    ],
    "small_keys": 16,
-   "floor": 11
+   "explosive": false,
+   "floor": 11,
+   "zone": "Rondon - Inside"
   },
   {
    "id": 7460100133,
@@ -13645,7 +13771,9 @@
     119
    ],
    "small_keys": 16,
-   "floor": 11
+   "explosive": false,
+   "floor": 11,
+   "zone": "The Kingdom of Rondon"
   },
   {
    "id": 7460100149,
@@ -13661,7 +13789,9 @@
     119
    ],
    "small_keys": 16,
-   "floor": 11
+   "explosive": false,
+   "floor": 11,
+   "zone": "The Tomb of the Gods - Level 2"
   },
   {
    "id": 7460100119,
@@ -13677,7 +13807,9 @@
     119
    ],
    "small_keys": 16,
-   "floor": 11
+   "explosive": false,
+   "floor": 11,
+   "zone": "Tower of Endless"
   },
   {
    "id": 7460100159,
@@ -13694,7 +13826,9 @@
     199
    ],
    "small_keys": 16,
-   "floor": 12
+   "explosive": false,
+   "floor": 12,
+   "zone": "Level 10 - The bottom"
   },
   {
    "id": 7460100140,
@@ -13710,7 +13844,9 @@
     180
    ],
    "small_keys": 16,
-   "floor": 11
+   "explosive": false,
+   "floor": 11,
+   "zone": "Next plane of existence"
   },
   {
    "id": 7460200000,
@@ -13720,7 +13856,9 @@
    "creature": "Assassin spectre",
    "keys": [],
    "small_keys": 0,
-   "floor": 1
+   "explosive": false,
+   "floor": 1,
+   "zone": "Roaming"
   },
   {
    "id": 7460200001,
@@ -13734,7 +13872,9 @@
     180
    ],
    "small_keys": 16,
-   "floor": 11
+   "explosive": false,
+   "floor": 11,
+   "zone": "Next plane of existence"
   },
   {
    "id": 7460200002,
@@ -13748,7 +13888,9 @@
     180
    ],
    "small_keys": 16,
-   "floor": 11
+   "explosive": false,
+   "floor": 11,
+   "zone": "Ancient city"
   },
   {
    "id": 7460200003,
@@ -13761,7 +13903,9 @@
     119
    ],
    "small_keys": 16,
-   "floor": 9
+   "explosive": false,
+   "floor": 9,
+   "zone": "Ma'habre - The Tomb of the Gods"
   },
   {
    "id": 7460200004,
@@ -13774,7 +13918,9 @@
     119
    ],
    "small_keys": 16,
-   "floor": 11
+   "explosive": false,
+   "floor": 11,
+   "zone": "Ancient city - Downtown"
   },
   {
    "id": 7460200005,
@@ -13787,7 +13933,9 @@
     119
    ],
    "small_keys": 15,
-   "floor": 5
+   "explosive": false,
+   "floor": 5,
+   "zone": "Level 5 - Deeper thicket"
   },
   {
    "id": 7460200006,
@@ -13800,7 +13948,9 @@
     119
    ],
    "small_keys": 16,
-   "floor": 9
+   "explosive": false,
+   "floor": 9,
+   "zone": "Temple of Torment - Level 2"
   },
   {
    "id": 7460200007,
@@ -13815,7 +13965,9 @@
     199
    ],
    "small_keys": 15,
-   "floor": 6
+   "explosive": false,
+   "floor": 6,
+   "zone": "Level 6 - Mines"
   },
   {
    "id": 7460200008,
@@ -13827,7 +13979,9 @@
     48
    ],
    "small_keys": 7,
-   "floor": 3
+   "explosive": false,
+   "floor": 3,
+   "zone": "Level 3 - Prisons"
   },
   {
    "id": 7460200009,
@@ -13839,7 +13993,9 @@
     148
    ],
    "small_keys": 0,
-   "floor": 1
+   "explosive": false,
+   "floor": 1,
+   "zone": "Level 1 - Inner hall"
   },
   {
    "id": 7460200010,
@@ -13852,7 +14008,9 @@
     119
    ],
    "small_keys": 16,
-   "floor": 9
+   "explosive": false,
+   "floor": 9,
+   "zone": "Ma'habre - Inside"
   },
   {
    "id": 7460200011,
@@ -13866,7 +14024,9 @@
     180
    ],
    "small_keys": 16,
-   "floor": 11
+   "explosive": false,
+   "floor": 11,
+   "zone": "Ancient city"
   },
   {
    "id": 7460200012,
@@ -13879,7 +14039,9 @@
     119
    ],
    "small_keys": 15,
-   "floor": 5
+   "explosive": false,
+   "floor": 5,
+   "zone": "Level 5 - Deeper thicket"
   },
   {
    "id": 7460200013,
@@ -13891,7 +14053,9 @@
     149
    ],
    "small_keys": 7,
-   "floor": 1
+   "explosive": false,
+   "floor": 1,
+   "zone": "Level 1 - Entrance"
   },
   {
    "id": 7460200014,
@@ -13903,7 +14067,9 @@
     149
    ],
    "small_keys": 7,
-   "floor": 1
+   "explosive": false,
+   "floor": 1,
+   "zone": "Level 1 - Entrance"
   },
   {
    "id": 7460200015,
@@ -13913,7 +14079,9 @@
    "creature": "Jaggedjaw",
    "keys": [],
    "small_keys": 0,
-   "floor": 1
+   "explosive": false,
+   "floor": 1,
+   "zone": "Level 1 - Entrance"
   },
   {
    "id": 7460200016,
@@ -13923,7 +14091,9 @@
    "creature": "Lizardman",
    "keys": [],
    "small_keys": 7,
-   "floor": 2
+   "explosive": false,
+   "floor": 2,
+   "zone": "Level 2 - Blood pit"
   },
   {
    "id": 7460200017,
@@ -13937,7 +14107,9 @@
     180
    ],
    "small_keys": 16,
-   "floor": 11
+   "explosive": false,
+   "floor": 11,
+   "zone": "Ancient city"
   },
   {
    "id": 7460200018,
@@ -13949,7 +14121,9 @@
     148
    ],
    "small_keys": 0,
-   "floor": 2
+   "explosive": false,
+   "floor": 2,
+   "zone": "Level 2 - Basement"
   },
   {
    "id": 7460200019,
@@ -13961,7 +14135,9 @@
     148
    ],
    "small_keys": 0,
-   "floor": 3
+   "explosive": false,
+   "floor": 3,
+   "zone": "Level 3 - Silent corridor"
   },
   {
    "id": 7460200020,
@@ -13974,7 +14150,9 @@
     119
    ],
    "small_keys": 15,
-   "floor": 6
+   "explosive": false,
+   "floor": 6,
+   "zone": "Level 6 - Mines"
   },
   {
    "id": 7460200021,
@@ -13983,11 +14161,13 @@
    "tier": 1,
    "creature": "Mumbler",
    "keys": [
-    51,
-    202
+    48,
+    119
    ],
    "small_keys": 7,
-   "floor": 3
+   "explosive": false,
+   "floor": 3,
+   "zone": "Level 3 - Thicket"
   },
   {
    "id": 7460200022,
@@ -14000,7 +14180,9 @@
     119
    ],
    "small_keys": 15,
-   "floor": 5
+   "explosive": false,
+   "floor": 5,
+   "zone": "Level 5 - Mines"
   },
   {
    "id": 7460200023,
@@ -14013,7 +14195,9 @@
     202
    ],
    "small_keys": 7,
-   "floor": 1
+   "explosive": false,
+   "floor": 1,
+   "zone": "Level 1 - Inner hall"
   },
   {
    "id": 7460200024,
@@ -14025,7 +14209,9 @@
     149
    ],
    "small_keys": 7,
-   "floor": 1
+   "explosive": false,
+   "floor": 1,
+   "zone": "Level 1 - Entrance"
   },
   {
    "id": 7460200025,
@@ -14035,7 +14221,9 @@
    "creature": "Scarab",
    "keys": [],
    "small_keys": 7,
-   "floor": 1
+   "explosive": false,
+   "floor": 1,
+   "zone": "Level 1 - Entrance"
   },
   {
    "id": 7460200026,
@@ -14047,7 +14235,9 @@
     48
    ],
    "small_keys": 7,
-   "floor": 1
+   "explosive": false,
+   "floor": 1,
+   "zone": "Level 1 - Inner hall"
   },
   {
    "id": 7460200027,
@@ -14061,7 +14251,86 @@
     149
    ],
    "small_keys": 15,
-   "floor": 5
+   "explosive": false,
+   "floor": 5,
+   "zone": "Level 5 - Mines"
+  },
+  {
+   "id": 7460200900,
+   "name": "Bestiary: Uterus",
+   "type": "bestiary",
+   "tier": 4,
+   "creature": "Uterus",
+   "keys": [
+    48,
+    119
+   ],
+   "small_keys": 16,
+   "explosive": false,
+   "floor": 9,
+   "zone": "Ma'habre - Inside"
+  },
+  {
+   "id": 7460200901,
+   "name": "Bestiary: Lord of flies",
+   "type": "bestiary",
+   "tier": 4,
+   "creature": "Lord of flies",
+   "keys": [
+    48,
+    119
+   ],
+   "small_keys": 16,
+   "explosive": false,
+   "floor": 9,
+   "zone": "Ancient city - Downtown"
+  },
+  {
+   "id": 7460200902,
+   "name": "Bestiary: Harvestman",
+   "type": "bestiary",
+   "tier": 4,
+   "creature": "Harvestman",
+   "keys": [
+    48,
+    119
+   ],
+   "small_keys": 16,
+   "explosive": false,
+   "floor": 9,
+   "zone": "Ma'habre - Downtown"
+  },
+  {
+   "id": 7460200903,
+   "name": "Bestiary: Red man",
+   "type": "bestiary",
+   "tier": 4,
+   "creature": "Red man",
+   "keys": [
+    48,
+    119
+   ],
+   "small_keys": 16,
+   "explosive": false,
+   "floor": 9,
+   "zone": "Temple of Torment - Level 2"
+  },
+  {
+   "id": 7460200904,
+   "name": "Bestiary: Yellow lizardmage",
+   "type": "bestiary",
+   "tier": 5,
+   "creature": "Yellow lizardmage",
+   "keys": [
+    1,
+    2,
+    149,
+    199
+   ],
+   "small_keys": 16,
+   "explosive": false,
+   "floor": 10,
+   "zone": "Level 9 - The gauntlet"
   },
   {
    "id": 7460300000,
@@ -14074,7 +14343,9 @@
     119
    ],
    "small_keys": 16,
-   "floor": 7
+   "explosive": false,
+   "floor": 7,
+   "zone": "Level 7 - Catacombs"
   },
   {
    "id": 7460300001,
@@ -14088,7 +14359,9 @@
     180
    ],
    "small_keys": 16,
-   "floor": 11
+   "explosive": false,
+   "floor": 11,
+   "zone": "Ancient city"
   },
   {
    "id": 7460300002,
@@ -14102,7 +14375,9 @@
     180
    ],
    "small_keys": 16,
-   "floor": 9
+   "explosive": false,
+   "floor": 9,
+   "zone": "Golden Temple - Inside"
   },
   {
    "id": 7460300003,
@@ -14115,7 +14390,9 @@
     119
    ],
    "small_keys": 16,
-   "floor": 9
+   "explosive": false,
+   "floor": 9,
+   "zone": "Grand library - Inner sanctum"
   },
   {
    "id": 7460300004,
@@ -14129,7 +14406,9 @@
     188
    ],
    "small_keys": 16,
-   "floor": 11
+   "explosive": false,
+   "floor": 11,
+   "zone": "Ancient city - The bridge"
   },
   {
    "id": 7460300005,
@@ -14143,7 +14422,9 @@
     180
    ],
    "small_keys": 16,
-   "floor": 11
+   "explosive": false,
+   "floor": 11,
+   "zone": "Ancient city"
   },
   {
    "id": 7460300006,
@@ -14157,31 +14438,9 @@
     162
    ],
    "small_keys": 16,
-   "floor": 11
-  },
-  {
-   "id": 7460300007,
-   "name": "Defeat Knight spectre",
-   "type": "boss",
-   "tier": 2,
-   "creature": "Knight spectre",
-   "keys": [
-    1,
-    2,
-    149
-   ],
-   "small_keys": 15,
-   "floor": 5
-  },
-  {
-   "id": 7460300008,
-   "name": "Defeat Beheaded wizard",
-   "type": "boss",
-   "tier": 1,
-   "creature": "Beheaded wizard",
-   "keys": [],
-   "small_keys": 7,
-   "floor": 2
+   "explosive": false,
+   "floor": 11,
+   "zone": "Ancient city - Center square"
   },
   {
    "id": 7460300009,
@@ -14195,7 +14454,9 @@
     149
    ],
    "small_keys": 15,
-   "floor": 5
+   "explosive": false,
+   "floor": 5,
+   "zone": "Level 5 - Mines"
   },
   {
    "id": 7460300010,
@@ -14205,7 +14466,9 @@
    "creature": "Crow Mauler",
    "keys": [],
    "small_keys": 7,
-   "floor": 1
+   "explosive": false,
+   "floor": 1,
+   "zone": "Roaming"
   },
   {
    "id": 7460300011,
@@ -14218,7 +14481,9 @@
     119
    ],
    "small_keys": 16,
-   "floor": 11
+   "explosive": false,
+   "floor": 11,
+   "zone": "Oldegård - House"
   },
   {
    "id": 7460300012,
@@ -14231,20 +14496,9 @@
     119
    ],
    "small_keys": 16,
-   "floor": 9
-  },
-  {
-   "id": 7460300013,
-   "name": "Defeat Red man",
-   "type": "boss",
-   "tier": 4,
-   "creature": "Red man",
-   "keys": [
-    48,
-    119
-   ],
-   "small_keys": 16,
-   "floor": 9
+   "explosive": false,
+   "floor": 9,
+   "zone": "Ma'habre - Back alleys"
   },
   {
    "id": 7460300014,
@@ -14259,7 +14513,9 @@
     199
    ],
    "small_keys": 16,
-   "floor": 10
+   "explosive": false,
+   "floor": 10,
+   "zone": "Level 9"
   },
   {
    "id": 7460300015,
@@ -14271,7 +14527,9 @@
     148
    ],
    "small_keys": 0,
-   "floor": 3
+   "explosive": false,
+   "floor": 3,
+   "zone": "Level 3 - Basement"
   },
   {
    "id": 7460300016,
@@ -14285,33 +14543,9 @@
     179
    ],
    "small_keys": 16,
-   "floor": 11
-  },
-  {
-   "id": 7460300017,
-   "name": "Defeat Uterus",
-   "type": "boss",
-   "tier": 4,
-   "creature": "Uterus",
-   "keys": [
-    48,
-    119
-   ],
-   "small_keys": 16,
-   "floor": 9
-  },
-  {
-   "id": 7460300018,
-   "name": "Defeat Lord of flies",
-   "type": "boss",
-   "tier": 4,
-   "creature": "Lord of flies",
-   "keys": [
-    48,
-    119
-   ],
-   "small_keys": 16,
-   "floor": 9
+   "explosive": false,
+   "floor": 11,
+   "zone": "Ancient city - Inside"
   },
   {
    "id": 7460300019,
@@ -14323,7 +14557,9 @@
     148
    ],
    "small_keys": 0,
-   "floor": 1
+   "explosive": false,
+   "floor": 1,
+   "zone": "Level 1 - Inner hall"
   },
   {
    "id": 7460300020,
@@ -14336,20 +14572,9 @@
     2
    ],
    "small_keys": 15,
-   "floor": 4
-  },
-  {
-   "id": 7460300021,
-   "name": "Defeat Harvestman",
-   "type": "boss",
-   "tier": 4,
-   "creature": "Harvestman",
-   "keys": [
-    48,
-    119
-   ],
-   "small_keys": 16,
-   "floor": 9
+   "explosive": false,
+   "floor": 4,
+   "zone": "Level 4 - Caverns"
   },
   {
    "id": 7460300022,
@@ -14361,7 +14586,9 @@
     148
    ],
    "small_keys": 0,
-   "floor": 2
+   "explosive": false,
+   "floor": 2,
+   "zone": "Flip side - Basement"
   },
   {
    "id": 7460300023,
@@ -14373,7 +14600,9 @@
     149
    ],
    "small_keys": 7,
-   "floor": 1
+   "explosive": false,
+   "floor": 1,
+   "zone": "Level 1 - Entrance"
   },
   {
    "id": 7460300024,
@@ -14386,7 +14615,9 @@
     202
    ],
    "small_keys": 7,
-   "floor": 1
+   "explosive": false,
+   "floor": 1,
+   "zone": "Level 1 - Inner hall"
   },
   {
    "id": 7460300025,
@@ -14400,22 +14631,9 @@
     149
    ],
    "small_keys": 15,
-   "floor": 5
-  },
-  {
-   "id": 7460300026,
-   "name": "Defeat Yellow lizardmage",
-   "type": "boss",
-   "tier": 5,
-   "creature": "Yellow lizardmage",
-   "keys": [
-    1,
-    2,
-    149,
-    199
-   ],
-   "small_keys": 16,
-   "floor": 10
+   "explosive": false,
+   "floor": 5,
+   "zone": "Level 5 - Mines"
   },
   {
    "id": 7460300027,
@@ -14428,7 +14646,9 @@
     202
    ],
    "small_keys": 7,
-   "floor": 1
+   "explosive": false,
+   "floor": 1,
+   "zone": "Level 1 - Inner hall"
   },
   {
    "id": 7460400001,
@@ -14440,7 +14660,9 @@
     149
    ],
    "small_keys": 7,
-   "floor": 1
+   "explosive": false,
+   "floor": 1,
+   "zone": "Level 1 - Entrance"
   },
   {
    "id": 7460400002,
@@ -14452,7 +14674,9 @@
     149
    ],
    "small_keys": 7,
-   "floor": 1
+   "explosive": false,
+   "floor": 1,
+   "zone": "Level 1 - Entrance"
   },
   {
    "id": 7460400003,
@@ -14464,7 +14688,9 @@
     149
    ],
    "small_keys": 7,
-   "floor": 1
+   "explosive": false,
+   "floor": 1,
+   "zone": "Level 1 - Entrance"
   },
   {
    "id": 7460400004,
@@ -14477,7 +14703,9 @@
     202
    ],
    "small_keys": 7,
-   "floor": 1
+   "explosive": false,
+   "floor": 1,
+   "zone": "Level 1 - Inner hall"
   },
   {
    "id": 7460400005,
@@ -14489,7 +14717,9 @@
     149
    ],
    "small_keys": 7,
-   "floor": 1
+   "explosive": false,
+   "floor": 1,
+   "zone": "Level 1 - Entrance"
   },
   {
    "id": 7460400006,
@@ -14501,7 +14731,9 @@
     48
    ],
    "small_keys": 7,
-   "floor": 3
+   "explosive": false,
+   "floor": 3,
+   "zone": "Level 3 - Prisons"
   },
   {
    "id": 7460400007,
@@ -14513,7 +14745,9 @@
     48
    ],
    "small_keys": 7,
-   "floor": 3
+   "explosive": false,
+   "floor": 3,
+   "zone": "Level 3 - Prisons"
   },
   {
    "id": 7460400008,
@@ -14525,7 +14759,9 @@
     48
    ],
    "small_keys": 7,
-   "floor": 3
+   "explosive": false,
+   "floor": 3,
+   "zone": "Level 3 - Prisons"
   },
   {
    "id": 7460400009,
@@ -14537,20 +14773,9 @@
     149
    ],
    "small_keys": 7,
-   "floor": 1
-  },
-  {
-   "id": 7460400010,
-   "name": "Group: Priest3",
-   "type": "troop",
-   "tier": 1,
-   "troop": 10,
-   "keys": [
-    51,
-    202
-   ],
-   "small_keys": 7,
-   "floor": 1
+   "explosive": false,
+   "floor": 1,
+   "zone": "Level 1 - Entrance"
   },
   {
    "id": 7460400012,
@@ -14563,7 +14788,9 @@
     202
    ],
    "small_keys": 7,
-   "floor": 1
+   "explosive": false,
+   "floor": 1,
+   "zone": "Level 1 - Inner hall"
   },
   {
    "id": 7460400013,
@@ -14576,7 +14803,9 @@
     202
    ],
    "small_keys": 7,
-   "floor": 1
+   "explosive": false,
+   "floor": 1,
+   "zone": "Level 1 - Inner hall"
   },
   {
    "id": 7460400015,
@@ -14588,7 +14817,9 @@
     48
    ],
    "small_keys": 7,
-   "floor": 3
+   "explosive": false,
+   "floor": 3,
+   "zone": "Level 3 - Prisons"
   },
   {
    "id": 7460400017,
@@ -14601,7 +14832,9 @@
     202
    ],
    "small_keys": 7,
-   "floor": 1
+   "explosive": false,
+   "floor": 1,
+   "zone": "Level 1 - Inner hall"
   },
   {
    "id": 7460400018,
@@ -14611,7 +14844,9 @@
    "troop": 18,
    "keys": [],
    "small_keys": 7,
-   "floor": 2
+   "explosive": false,
+   "floor": 2,
+   "zone": "Level 2 - Blood pit"
   },
   {
    "id": 7460400019,
@@ -14624,7 +14859,9 @@
     2
    ],
    "small_keys": 15,
-   "floor": 4
+   "explosive": false,
+   "floor": 4,
+   "zone": "Level 4 - Caverns"
   },
   {
    "id": 7460400020,
@@ -14637,7 +14874,9 @@
     2
    ],
    "small_keys": 15,
-   "floor": 4
+   "explosive": false,
+   "floor": 4,
+   "zone": "Level 4 - Caverns"
   },
   {
    "id": 7460400021,
@@ -14651,7 +14890,9 @@
     149
    ],
    "small_keys": 15,
-   "floor": 5
+   "explosive": false,
+   "floor": 5,
+   "zone": "Level 5 - Mines"
   },
   {
    "id": 7460400022,
@@ -14665,7 +14906,9 @@
     149
    ],
    "small_keys": 15,
-   "floor": 5
+   "explosive": false,
+   "floor": 5,
+   "zone": "Level 5 - Mines"
   },
   {
    "id": 7460400024,
@@ -14679,7 +14922,9 @@
     149
    ],
    "small_keys": 15,
-   "floor": 5
+   "explosive": false,
+   "floor": 5,
+   "zone": "Level 5 - Mines"
   },
   {
    "id": 7460400025,
@@ -14693,7 +14938,9 @@
     149
    ],
    "small_keys": 15,
-   "floor": 5
+   "explosive": false,
+   "floor": 5,
+   "zone": "Level 5 - Mines"
   },
   {
    "id": 7460400026,
@@ -14709,7 +14956,9 @@
     199
    ],
    "small_keys": 15,
-   "floor": 6
+   "explosive": false,
+   "floor": 6,
+   "zone": "Level 6 - Mines"
   },
   {
    "id": 7460400028,
@@ -14722,7 +14971,9 @@
     202
    ],
    "small_keys": 7,
-   "floor": 3
+   "explosive": true,
+   "floor": 3,
+   "zone": "Level 3 - Thicket"
   },
   {
    "id": 7460400029,
@@ -14735,7 +14986,9 @@
     202
    ],
    "small_keys": 7,
-   "floor": 3
+   "explosive": true,
+   "floor": 3,
+   "zone": "Level 3 - Thicket"
   },
   {
    "id": 7460400030,
@@ -14748,7 +15001,9 @@
     202
    ],
    "small_keys": 7,
-   "floor": 3
+   "explosive": true,
+   "floor": 3,
+   "zone": "Level 3 - Thicket"
   },
   {
    "id": 7460400031,
@@ -14761,7 +15016,9 @@
     119
    ],
    "small_keys": 15,
-   "floor": 4
+   "explosive": true,
+   "floor": 4,
+   "zone": "Level 4 - Thicket"
   },
   {
    "id": 7460400032,
@@ -14774,7 +15031,9 @@
     119
    ],
    "small_keys": 15,
-   "floor": 4
+   "explosive": true,
+   "floor": 4,
+   "zone": "Level 4 - Thicket"
   },
   {
    "id": 7460400033,
@@ -14789,7 +15048,9 @@
     199
    ],
    "small_keys": 15,
-   "floor": 6
+   "explosive": false,
+   "floor": 6,
+   "zone": "Level 6 - Mines"
   },
   {
    "id": 7460400034,
@@ -14805,7 +15066,9 @@
     199
    ],
    "small_keys": 15,
-   "floor": 6
+   "explosive": false,
+   "floor": 6,
+   "zone": "Level 6 - Mines"
   },
   {
    "id": 7460400035,
@@ -14821,7 +15084,9 @@
     199
    ],
    "small_keys": 15,
-   "floor": 6
+   "explosive": false,
+   "floor": 6,
+   "zone": "Level 6 - Mines"
   },
   {
    "id": 7460400036,
@@ -14837,7 +15102,9 @@
     199
    ],
    "small_keys": 15,
-   "floor": 6
+   "explosive": false,
+   "floor": 6,
+   "zone": "Level 6 - Mines"
   },
   {
    "id": 7460400037,
@@ -14853,7 +15120,9 @@
     199
    ],
    "small_keys": 15,
-   "floor": 6
+   "explosive": false,
+   "floor": 6,
+   "zone": "Level 6 - Mines"
   },
   {
    "id": 7460400038,
@@ -14869,7 +15138,9 @@
     199
    ],
    "small_keys": 15,
-   "floor": 6
+   "explosive": false,
+   "floor": 6,
+   "zone": "Level 6 - Mines"
   },
   {
    "id": 7460400039,
@@ -14884,7 +15155,9 @@
     199
    ],
    "small_keys": 15,
-   "floor": 6
+   "explosive": false,
+   "floor": 6,
+   "zone": "Huts village"
   },
   {
    "id": 7460400040,
@@ -14900,7 +15173,9 @@
     199
    ],
    "small_keys": 15,
-   "floor": 6
+   "explosive": false,
+   "floor": 6,
+   "zone": "Level 6 - Mines"
   },
   {
    "id": 7460400041,
@@ -14916,7 +15191,9 @@
     199
    ],
    "small_keys": 15,
-   "floor": 6
+   "explosive": false,
+   "floor": 6,
+   "zone": "Level 6 - Mines"
   },
   {
    "id": 7460400042,
@@ -14932,20 +15209,9 @@
     199
    ],
    "small_keys": 15,
-   "floor": 6
-  },
-  {
-   "id": 7460400044,
-   "name": "Group: Ballista1",
-   "type": "troop",
-   "tier": 2,
-   "troop": 44,
-   "keys": [
-    48,
-    119
-   ],
-   "small_keys": 15,
-   "floor": 6
+   "explosive": false,
+   "floor": 6,
+   "zone": "Level 6 - Mines"
   },
   {
    "id": 7460400045,
@@ -14957,7 +15223,9 @@
     48
    ],
    "small_keys": 7,
-   "floor": 3
+   "explosive": false,
+   "floor": 3,
+   "zone": "Level 3 - Prisons"
   },
   {
    "id": 7460400046,
@@ -14970,7 +15238,9 @@
     119
    ],
    "small_keys": 15,
-   "floor": 6
+   "explosive": false,
+   "floor": 6,
+   "zone": "Level 6 - Mines"
   },
   {
    "id": 7460400047,
@@ -14983,7 +15253,9 @@
     119
    ],
    "small_keys": 16,
-   "floor": 7
+   "explosive": false,
+   "floor": 7,
+   "zone": "Level 7 - Catacombs"
   },
   {
    "id": 7460400048,
@@ -14996,7 +15268,9 @@
     119
    ],
    "small_keys": 16,
-   "floor": 7
+   "explosive": false,
+   "floor": 7,
+   "zone": "Level 7 - Catacombs"
   },
   {
    "id": 7460400050,
@@ -15010,7 +15284,9 @@
     149
    ],
    "small_keys": 15,
-   "floor": 5
+   "explosive": false,
+   "floor": 5,
+   "zone": "Level 5 - Mines"
   },
   {
    "id": 7460400051,
@@ -15020,7 +15296,9 @@
    "troop": 51,
    "keys": [],
    "small_keys": 7,
-   "floor": 1
+   "explosive": false,
+   "floor": 1,
+   "zone": "Roaming"
   },
   {
    "id": 7460400052,
@@ -15032,7 +15310,9 @@
     148
    ],
    "small_keys": 0,
-   "floor": 3
+   "explosive": false,
+   "floor": 3,
+   "zone": "Level 3 - Basement"
   },
   {
    "id": 7460400053,
@@ -15045,7 +15325,9 @@
     119
    ],
    "small_keys": 16,
-   "floor": 7
+   "explosive": false,
+   "floor": 7,
+   "zone": "Level 7 - Catacombs"
   },
   {
    "id": 7460400055,
@@ -15058,7 +15340,9 @@
     119
    ],
    "small_keys": 16,
-   "floor": 9
+   "explosive": false,
+   "floor": 9,
+   "zone": "Ma'habre - Downtown"
   },
   {
    "id": 7460400056,
@@ -15068,7 +15352,9 @@
    "troop": 56,
    "keys": [],
    "small_keys": 0,
-   "floor": 1
+   "explosive": false,
+   "floor": 1,
+   "zone": "Roaming"
   },
   {
    "id": 7460400057,
@@ -15080,7 +15366,9 @@
     148
    ],
    "small_keys": 0,
-   "floor": 3
+   "explosive": false,
+   "floor": 3,
+   "zone": "Level 3 - Basement"
   },
   {
    "id": 7460400058,
@@ -15092,7 +15380,9 @@
     148
    ],
    "small_keys": 7,
-   "floor": 2
+   "explosive": false,
+   "floor": 2,
+   "zone": "Level 2 - Basement"
   },
   {
    "id": 7460400059,
@@ -15104,7 +15394,9 @@
     48
    ],
    "small_keys": 7,
-   "floor": 3
+   "explosive": false,
+   "floor": 3,
+   "zone": "Level 3 - Prisons"
   },
   {
    "id": 7460400061,
@@ -15116,7 +15408,9 @@
     148
    ],
    "small_keys": 0,
-   "floor": 2
+   "explosive": false,
+   "floor": 2,
+   "zone": "Level 2 - Basement"
   },
   {
    "id": 7460400062,
@@ -15128,7 +15422,9 @@
     148
    ],
    "small_keys": 0,
-   "floor": 2
+   "explosive": false,
+   "floor": 2,
+   "zone": "Level 2 - Basement"
   },
   {
    "id": 7460400063,
@@ -15140,7 +15436,9 @@
     148
    ],
    "small_keys": 0,
-   "floor": 2
+   "explosive": false,
+   "floor": 2,
+   "zone": "Level 2 - Basement"
   },
   {
    "id": 7460400064,
@@ -15152,7 +15450,9 @@
     148
    ],
    "small_keys": 0,
-   "floor": 2
+   "explosive": false,
+   "floor": 2,
+   "zone": "Level 2 - Basement"
   },
   {
    "id": 7460400072,
@@ -15165,7 +15465,9 @@
     119
    ],
    "small_keys": 16,
-   "floor": 9
+   "explosive": false,
+   "floor": 9,
+   "zone": "Temple of Torment - Level 2"
   },
   {
    "id": 7460400074,
@@ -15178,7 +15480,9 @@
     119
    ],
    "small_keys": 16,
-   "floor": 9
+   "explosive": false,
+   "floor": 9,
+   "zone": "Temple of Torment - Level 2"
   },
   {
    "id": 7460400075,
@@ -15191,7 +15495,9 @@
     119
    ],
    "small_keys": 16,
-   "floor": 9
+   "explosive": false,
+   "floor": 9,
+   "zone": "Temple of Torment - Level 1"
   },
   {
    "id": 7460400078,
@@ -15206,7 +15512,9 @@
     199
    ],
    "small_keys": 15,
-   "floor": 6
+   "explosive": false,
+   "floor": 6,
+   "zone": "Huts village"
   },
   {
    "id": 7460400079,
@@ -15222,7 +15530,9 @@
     199
    ],
    "small_keys": 15,
-   "floor": 6
+   "explosive": false,
+   "floor": 6,
+   "zone": "Level 6 - Mines"
   },
   {
    "id": 7460400080,
@@ -15235,7 +15545,9 @@
     119
    ],
    "small_keys": 16,
-   "floor": 9
+   "explosive": false,
+   "floor": 9,
+   "zone": "Ancient city - Inside"
   },
   {
    "id": 7460400081,
@@ -15249,7 +15561,9 @@
     163
    ],
    "small_keys": 16,
-   "floor": 11
+   "explosive": false,
+   "floor": 11,
+   "zone": "Ancient city - Temple district"
   },
   {
    "id": 7460400082,
@@ -15263,7 +15577,9 @@
     163
    ],
    "small_keys": 16,
-   "floor": 11
+   "explosive": false,
+   "floor": 11,
+   "zone": "Ancient city - Temple district"
   },
   {
    "id": 7460400084,
@@ -15276,7 +15592,9 @@
     119
    ],
    "small_keys": 16,
-   "floor": 11
+   "explosive": false,
+   "floor": 11,
+   "zone": "Ancient city - Back alleys"
   },
   {
    "id": 7460400096,
@@ -15288,7 +15606,9 @@
     148
    ],
    "small_keys": 0,
-   "floor": 2
+   "explosive": false,
+   "floor": 2,
+   "zone": "Flip side - Basement"
   },
   {
    "id": 7460400097,
@@ -15302,7 +15622,9 @@
     162
    ],
    "small_keys": 16,
-   "floor": 11
+   "explosive": false,
+   "floor": 11,
+   "zone": "Ancient city - Center square"
   },
   {
    "id": 7460400098,
@@ -15315,7 +15637,9 @@
     119
    ],
    "small_keys": 16,
-   "floor": 11
+   "explosive": false,
+   "floor": 11,
+   "zone": "Ancient city - Inside"
   },
   {
    "id": 7460400099,
@@ -15328,7 +15652,9 @@
     119
    ],
    "small_keys": 16,
-   "floor": 9
+   "explosive": false,
+   "floor": 9,
+   "zone": "Ma'habre - Temple district"
   },
   {
    "id": 7460400100,
@@ -15341,7 +15667,9 @@
     119
    ],
    "small_keys": 16,
-   "floor": 9
+   "explosive": false,
+   "floor": 9,
+   "zone": "Ma'habre - Back alleys"
   },
   {
    "id": 7460400101,
@@ -15355,7 +15683,9 @@
     188
    ],
    "small_keys": 16,
-   "floor": 11
+   "explosive": false,
+   "floor": 11,
+   "zone": "Ancient city - The bridge"
   },
   {
    "id": 7460400102,
@@ -15368,7 +15698,9 @@
     119
    ],
    "small_keys": 16,
-   "floor": 9
+   "explosive": false,
+   "floor": 9,
+   "zone": "Ma'habre - Inside"
   },
   {
    "id": 7460400105,
@@ -15381,7 +15713,9 @@
     119
    ],
    "small_keys": 16,
-   "floor": 9
+   "explosive": false,
+   "floor": 9,
+   "zone": "Ma'habre - Inside"
   },
   {
    "id": 7460400106,
@@ -15394,7 +15728,9 @@
     119
    ],
    "small_keys": 16,
-   "floor": 9
+   "explosive": false,
+   "floor": 9,
+   "zone": "Ma'habre - Inside"
   },
   {
    "id": 7460400107,
@@ -15407,7 +15743,9 @@
     119
    ],
    "small_keys": 16,
-   "floor": 9
+   "explosive": false,
+   "floor": 9,
+   "zone": "Ma'habre - Inside"
   },
   {
    "id": 7460400108,
@@ -15420,7 +15758,9 @@
     119
    ],
    "small_keys": 16,
-   "floor": 9
+   "explosive": false,
+   "floor": 9,
+   "zone": "Ma'habre - Inside"
   },
   {
    "id": 7460400109,
@@ -15433,7 +15773,9 @@
     119
    ],
    "small_keys": 16,
-   "floor": 11
+   "explosive": false,
+   "floor": 11,
+   "zone": "Oldegård - House"
   },
   {
    "id": 7460400110,
@@ -15446,7 +15788,9 @@
     119
    ],
    "small_keys": 16,
-   "floor": 9
+   "explosive": false,
+   "floor": 9,
+   "zone": "Grand library - Inner sanctum"
   },
   {
    "id": 7460400115,
@@ -15460,7 +15804,9 @@
     180
    ],
    "small_keys": 16,
-   "floor": 9
+   "explosive": false,
+   "floor": 9,
+   "zone": "Golden Temple - Inside"
   },
   {
    "id": 7460400116,
@@ -15474,7 +15820,9 @@
     180
    ],
    "small_keys": 16,
-   "floor": 9
+   "explosive": false,
+   "floor": 9,
+   "zone": "Golden Temple - Inside"
   },
   {
    "id": 7460400117,
@@ -15489,7 +15837,9 @@
     199
    ],
    "small_keys": 16,
-   "floor": 8
+   "explosive": false,
+   "floor": 8,
+   "zone": "Level 8 - The gauntlet"
   },
   {
    "id": 7460400118,
@@ -15504,7 +15854,9 @@
     199
    ],
    "small_keys": 16,
-   "floor": 8
+   "explosive": false,
+   "floor": 8,
+   "zone": "Level 8 - The gauntlet"
   },
   {
    "id": 7460400128,
@@ -15519,7 +15871,9 @@
     199
    ],
    "small_keys": 16,
-   "floor": 8
+   "explosive": false,
+   "floor": 8,
+   "zone": "Level 8 - The gauntlet"
   },
   {
    "id": 7460400129,
@@ -15534,7 +15888,9 @@
     199
    ],
    "small_keys": 16,
-   "floor": 8
+   "explosive": false,
+   "floor": 8,
+   "zone": "Level 8 - The gauntlet"
   },
   {
    "id": 7460400132,
@@ -15548,7 +15904,9 @@
     149
    ],
    "small_keys": 15,
-   "floor": 5
+   "explosive": false,
+   "floor": 5,
+   "zone": "Level 5 - Mines"
   },
   {
    "id": 7460400133,
@@ -15562,7 +15920,9 @@
     149
    ],
    "small_keys": 15,
-   "floor": 5
+   "explosive": false,
+   "floor": 5,
+   "zone": "Level 5 - Mines"
   },
   {
    "id": 7460400135,
@@ -15578,7 +15938,9 @@
     199
    ],
    "small_keys": 16,
-   "floor": 10
+   "explosive": false,
+   "floor": 10,
+   "zone": "Level 9 - The gauntlet"
   },
   {
    "id": 7460400136,
@@ -15591,7 +15953,9 @@
     119
    ],
    "small_keys": 16,
-   "floor": 11
+   "explosive": false,
+   "floor": 11,
+   "zone": "Ancient city - Inside"
   },
   {
    "id": 7460400138,
@@ -15603,7 +15967,9 @@
     149
    ],
    "small_keys": 7,
-   "floor": 1
+   "explosive": false,
+   "floor": 1,
+   "zone": "Level 1 - Entrance"
   },
   {
    "id": 7460400139,
@@ -15617,7 +15983,9 @@
     188
    ],
    "small_keys": 16,
-   "floor": 11
+   "explosive": false,
+   "floor": 11,
+   "zone": "Ancient city - Downtown"
   },
   {
    "id": 7460400140,
@@ -15631,7 +15999,9 @@
     179
    ],
    "small_keys": 16,
-   "floor": 11
+   "explosive": false,
+   "floor": 11,
+   "zone": "Ancient city - Inside"
   },
   {
    "id": 7460400141,
@@ -15644,7 +16014,9 @@
     119
    ],
    "small_keys": 16,
-   "floor": 11
+   "explosive": false,
+   "floor": 11,
+   "zone": "Ancient city - Inside"
   },
   {
    "id": 7460400142,
@@ -15657,7 +16029,9 @@
     119
    ],
    "small_keys": 16,
-   "floor": 9
+   "explosive": false,
+   "floor": 9,
+   "zone": "Temple of Torment - Level 2"
   },
   {
    "id": 7460400143,
@@ -15673,7 +16047,9 @@
     199
    ],
    "small_keys": 15,
-   "floor": 6
+   "explosive": false,
+   "floor": 6,
+   "zone": "Level 6 - Mines"
   },
   {
    "id": 7460400144,
@@ -15689,7 +16065,9 @@
     199
    ],
    "small_keys": 15,
-   "floor": 6
+   "explosive": false,
+   "floor": 6,
+   "zone": "Level 6 - Mines"
   },
   {
    "id": 7460400148,
@@ -15704,7 +16082,9 @@
     199
    ],
    "small_keys": 16,
-   "floor": 8
+   "explosive": false,
+   "floor": 8,
+   "zone": "Level 8 - The gauntlet"
   },
   {
    "id": 7460400150,
@@ -15717,7 +16097,9 @@
     119
    ],
    "small_keys": 16,
-   "floor": 9
+   "explosive": false,
+   "floor": 9,
+   "zone": "Ma'habre - Downtown"
   },
   {
    "id": 7460400151,
@@ -15730,7 +16112,9 @@
     119
    ],
    "small_keys": 16,
-   "floor": 9
+   "explosive": false,
+   "floor": 9,
+   "zone": "Ma'habre - The Tomb of the Gods"
   },
   {
    "id": 7460400152,
@@ -15743,7 +16127,9 @@
     119
    ],
    "small_keys": 16,
-   "floor": 9
+   "explosive": false,
+   "floor": 9,
+   "zone": "Ma'habre - The Tomb of the Gods"
   },
   {
    "id": 7460400153,
@@ -15756,7 +16142,9 @@
     119
    ],
    "small_keys": 16,
-   "floor": 9
+   "explosive": false,
+   "floor": 9,
+   "zone": "Ma'habre - The Tomb of the Gods"
   },
   {
    "id": 7460400154,
@@ -15769,7 +16157,9 @@
     119
    ],
    "small_keys": 16,
-   "floor": 9
+   "explosive": false,
+   "floor": 9,
+   "zone": "Ma'habre - The Tomb of the Gods"
   },
   {
    "id": 7460400156,
@@ -15782,7 +16172,9 @@
     119
    ],
    "small_keys": 16,
-   "floor": 9
+   "explosive": false,
+   "floor": 9,
+   "zone": "Ma'habre - The Tomb of the Gods"
   },
   {
    "id": 7460400157,
@@ -15795,7 +16187,9 @@
     119
    ],
    "small_keys": 16,
-   "floor": 9
+   "explosive": false,
+   "floor": 9,
+   "zone": "Ma'habre - The Tomb of the Gods"
   },
   {
    "id": 7460400158,
@@ -15808,7 +16202,9 @@
     119
    ],
    "small_keys": 16,
-   "floor": 9
+   "explosive": false,
+   "floor": 9,
+   "zone": "Ma'habre - The Tomb of the Gods"
   },
   {
    "id": 7460400160,
@@ -15821,7 +16217,9 @@
     119
    ],
    "small_keys": 16,
-   "floor": 11
+   "explosive": false,
+   "floor": 11,
+   "zone": "The Tomb of the Gods - Level 2"
   },
   {
    "id": 7460400161,
@@ -15834,7 +16232,9 @@
     119
    ],
    "small_keys": 16,
-   "floor": 11
+   "explosive": false,
+   "floor": 11,
+   "zone": "Ancient city - The Tomb of the Gods"
   },
   {
    "id": 7460400162,
@@ -15848,7 +16248,9 @@
     188
    ],
    "small_keys": 16,
-   "floor": 11
+   "explosive": false,
+   "floor": 11,
+   "zone": "Ancient city - Downtown"
   },
   {
    "id": 7460400163,
@@ -15862,7 +16264,9 @@
     149
    ],
    "small_keys": 16,
-   "floor": 11
+   "explosive": false,
+   "floor": 11,
+   "zone": "The Tomb of the Gods - Level 2"
   },
   {
    "id": 7460400164,
@@ -15876,7 +16280,9 @@
     149
    ],
    "small_keys": 16,
-   "floor": 11
+   "explosive": false,
+   "floor": 11,
+   "zone": "The Tomb of the Gods - Level 2"
   },
   {
    "id": 7460400165,
@@ -15890,7 +16296,9 @@
     149
    ],
    "small_keys": 16,
-   "floor": 11
+   "explosive": false,
+   "floor": 11,
+   "zone": "The Tomb of the Gods - Level 2"
   },
   {
    "id": 7460400172,
@@ -15904,7 +16312,9 @@
     180
    ],
    "small_keys": 16,
-   "floor": 11
+   "explosive": false,
+   "floor": 11,
+   "zone": "Ancient city"
   },
   {
    "id": 7460400174,
@@ -15916,7 +16326,9 @@
     148
    ],
    "small_keys": 0,
-   "floor": 3
+   "explosive": false,
+   "floor": 3,
+   "zone": "Level 3 - Silent corridor"
   },
   {
    "id": 7460400175,
@@ -15929,7 +16341,9 @@
     119
    ],
    "small_keys": 16,
-   "floor": 7
+   "explosive": false,
+   "floor": 7,
+   "zone": "Level 7 - Catacombs"
   },
   {
    "id": 7460400176,
@@ -15942,7 +16356,9 @@
     119
    ],
    "small_keys": 16,
-   "floor": 11
+   "explosive": false,
+   "floor": 11,
+   "zone": "Ancient city - Inside"
   },
   {
    "id": 7460400177,
@@ -15956,7 +16372,9 @@
     180
    ],
    "small_keys": 16,
-   "floor": 11
+   "explosive": false,
+   "floor": 11,
+   "zone": "Ancient city"
   },
   {
    "id": 7460400178,
@@ -15970,7 +16388,9 @@
     180
    ],
    "small_keys": 16,
-   "floor": 11
+   "explosive": false,
+   "floor": 11,
+   "zone": "Ancient city"
   },
   {
    "id": 7460400179,
@@ -15984,7 +16404,9 @@
     180
    ],
    "small_keys": 16,
-   "floor": 11
+   "explosive": false,
+   "floor": 11,
+   "zone": "Ancient city"
   },
   {
    "id": 7460400180,
@@ -15998,7 +16420,9 @@
     180
    ],
    "small_keys": 16,
-   "floor": 11
+   "explosive": false,
+   "floor": 11,
+   "zone": "Ancient city"
   },
   {
    "id": 7460400181,
@@ -16012,7 +16436,9 @@
     180
    ],
    "small_keys": 16,
-   "floor": 11
+   "explosive": false,
+   "floor": 11,
+   "zone": "Ancient city"
   },
   {
    "id": 7460400183,
@@ -16026,7 +16452,9 @@
     180
    ],
    "small_keys": 16,
-   "floor": 11
+   "explosive": false,
+   "floor": 11,
+   "zone": "Ancient city"
   },
   {
    "id": 7460400184,
@@ -16040,7 +16468,9 @@
     180
    ],
    "small_keys": 16,
-   "floor": 11
+   "explosive": false,
+   "floor": 11,
+   "zone": "Ancient city"
   },
   {
    "id": 7460400185,
@@ -16054,7 +16484,9 @@
     180
    ],
    "small_keys": 16,
-   "floor": 11
+   "explosive": false,
+   "floor": 11,
+   "zone": "Ancient city"
   },
   {
    "id": 7460400187,
@@ -16067,7 +16499,9 @@
     119
    ],
    "small_keys": 16,
-   "floor": 7
+   "explosive": false,
+   "floor": 7,
+   "zone": "Level 7 - Catacombs"
   },
   {
    "id": 7460400188,
@@ -16080,7 +16514,9 @@
     119
    ],
    "small_keys": 15,
-   "floor": 5
+   "explosive": false,
+   "floor": 5,
+   "zone": "Level 5 - Deeper thicket"
   },
   {
    "id": 7460400189,
@@ -16093,7 +16529,9 @@
     119
    ],
    "small_keys": 15,
-   "floor": 5
+   "explosive": false,
+   "floor": 5,
+   "zone": "Level 5 - Deeper thicket"
   },
   {
    "id": 7460400191,
@@ -16107,7 +16545,9 @@
     180
    ],
    "small_keys": 16,
-   "floor": 11
+   "explosive": false,
+   "floor": 11,
+   "zone": "Ancient city"
   },
   {
    "id": 7460400193,
@@ -16120,7 +16560,9 @@
     119
    ],
    "small_keys": 15,
-   "floor": 5
+   "explosive": false,
+   "floor": 5,
+   "zone": "Level 5 - Deeper thicket"
   },
   {
    "id": 7460400194,
@@ -16133,7 +16575,9 @@
     119
    ],
    "small_keys": 16,
-   "floor": 9
+   "explosive": false,
+   "floor": 9,
+   "zone": "Grand library"
   },
   {
    "id": 7460400195,
@@ -16145,7 +16589,9 @@
     148
    ],
    "small_keys": 0,
-   "floor": 1
+   "explosive": false,
+   "floor": 1,
+   "zone": "Level 1 - Inner hall"
   },
   {
    "id": 7460400196,
@@ -16158,7 +16604,9 @@
     119
    ],
    "small_keys": 16,
-   "floor": 7
+   "explosive": false,
+   "floor": 7,
+   "zone": "Level 7 - Catacombs"
   },
   {
    "id": 7460400199,
@@ -16168,7 +16616,9 @@
    "troop": 199,
    "keys": [],
    "small_keys": 0,
-   "floor": 1
+   "explosive": false,
+   "floor": 1,
+   "zone": "Level 1 - Entrance"
   },
   {
    "id": 7460400200,
@@ -16178,7 +16628,9 @@
    "troop": 200,
    "keys": [],
    "small_keys": 0,
-   "floor": 1
+   "explosive": false,
+   "floor": 1,
+   "zone": "Level 1 - Entrance"
   },
   {
    "id": 7460400201,
@@ -16188,7 +16640,9 @@
    "troop": 201,
    "keys": [],
    "small_keys": 0,
-   "floor": 1
+   "explosive": false,
+   "floor": 1,
+   "zone": "Level 1 - Hidden backyard"
   },
   {
    "id": 7460400202,
@@ -16203,7 +16657,9 @@
     180
    ],
    "small_keys": 16,
-   "floor": 9
+   "explosive": false,
+   "floor": 9,
+   "zone": "Golden Temple - Inside"
   },
   {
    "id": 7460400203,
@@ -16218,7 +16674,9 @@
     180
    ],
    "small_keys": 16,
-   "floor": 9
+   "explosive": false,
+   "floor": 9,
+   "zone": "Golden Temple - Inside"
   },
   {
    "id": 7460400204,
@@ -16233,7 +16691,9 @@
     180
    ],
    "small_keys": 16,
-   "floor": 9
+   "explosive": false,
+   "floor": 9,
+   "zone": "Golden Temple - Inside"
   },
   {
    "id": 7460400205,
@@ -16245,7 +16705,9 @@
     148
    ],
    "small_keys": 0,
-   "floor": 1
+   "explosive": false,
+   "floor": 1,
+   "zone": "Level 1 - Inner hall"
   },
   {
    "id": 7460400212,
@@ -16258,7 +16720,9 @@
     119
    ],
    "small_keys": 16,
-   "floor": 9
+   "explosive": false,
+   "floor": 9,
+   "zone": "Grand library"
   },
   {
    "id": 7460400213,
@@ -16273,7 +16737,9 @@
     199
    ],
    "small_keys": 16,
-   "floor": 10
+   "explosive": false,
+   "floor": 10,
+   "zone": "Level 9 - The gauntlet"
   },
   {
    "id": 7460400214,
@@ -16288,7 +16754,9 @@
     199
    ],
    "small_keys": 16,
-   "floor": 10
+   "explosive": false,
+   "floor": 10,
+   "zone": "Level 9 - The gauntlet"
   },
   {
    "id": 7460400215,
@@ -16303,7 +16771,9 @@
     199
    ],
    "small_keys": 16,
-   "floor": 10
+   "explosive": false,
+   "floor": 10,
+   "zone": "Level 9 - The gauntlet"
   },
   {
    "id": 7460400216,
@@ -16318,7 +16788,9 @@
     199
    ],
    "small_keys": 16,
-   "floor": 10
+   "explosive": false,
+   "floor": 10,
+   "zone": "Level 9 - The gauntlet"
   },
   {
    "id": 7460500020,
@@ -16328,7 +16800,9 @@
    "item": 20,
    "keys": [],
    "small_keys": 0,
-   "floor": 1
+   "explosive": false,
+   "floor": 1,
+   "zone": "Level 1 - Inner hall"
   },
   {
    "id": 7460500048,
@@ -16340,7 +16814,9 @@
     148
    ],
    "small_keys": 0,
-   "floor": 1
+   "explosive": false,
+   "floor": 1,
+   "zone": "Level 1 - Entrance"
   },
   {
    "id": 7460500051,
@@ -16352,7 +16828,9 @@
     202
    ],
    "small_keys": 7,
-   "floor": 1
+   "explosive": false,
+   "floor": 1,
+   "zone": "Level 1 - Inner hall"
   },
   {
    "id": 7460500180,
@@ -16366,7 +16844,9 @@
     162
    ],
    "small_keys": 16,
-   "floor": 9
+   "explosive": false,
+   "floor": 9,
+   "zone": "Golden Temple - Inside"
   },
   {
    "id": 7460500148,
@@ -16376,7 +16856,9 @@
    "item": 148,
    "keys": [],
    "small_keys": 7,
-   "floor": 1
+   "explosive": false,
+   "floor": 1,
+   "zone": "Level 1 - Entrance"
   },
   {
    "id": 7460500202,
@@ -16388,7 +16870,9 @@
     149
    ],
    "small_keys": 7,
-   "floor": 1
+   "explosive": false,
+   "floor": 1,
+   "zone": "Level 1 - Entrance"
   },
   {
    "id": 7460500179,
@@ -16401,7 +16885,9 @@
     119
    ],
    "small_keys": 16,
-   "floor": 11
+   "explosive": false,
+   "floor": 11,
+   "zone": "The Tomb of the Gods - Level 2"
   },
   {
    "id": 7460500119,
@@ -16413,7 +16899,9 @@
     149
    ],
    "small_keys": 15,
-   "floor": 1
+   "explosive": false,
+   "floor": 1,
+   "zone": "Level 1 - Entrance"
   },
   {
    "id": 7460500162,
@@ -16425,7 +16913,9 @@
     149
    ],
    "small_keys": 7,
-   "floor": 1
+   "explosive": false,
+   "floor": 1,
+   "zone": "Level 1 - Entrance"
   },
   {
    "id": 7460500163,
@@ -16437,7 +16927,9 @@
     149
    ],
    "small_keys": 7,
-   "floor": 1
+   "explosive": false,
+   "floor": 1,
+   "zone": "Level 1 - Entrance"
   },
   {
    "id": 7460500188,
@@ -16451,7 +16943,9 @@
     163
    ],
    "small_keys": 16,
-   "floor": 11
+   "explosive": false,
+   "floor": 11,
+   "zone": "Ancient city - Temple district"
   },
   {
    "id": 7460500199,
@@ -16465,7 +16959,9 @@
     149
    ],
    "small_keys": 15,
-   "floor": 6
+   "explosive": false,
+   "floor": 6,
+   "zone": "Huts village"
   },
   {
    "id": 7460500149,
@@ -16475,7 +16971,9 @@
    "item": 149,
    "keys": [],
    "small_keys": 0,
-   "floor": 1
+   "explosive": false,
+   "floor": 1,
+   "zone": "Level 1 - Inner hall"
   },
   {
    "id": 7460500002,
@@ -16487,7 +16985,9 @@
     1
    ],
    "small_keys": 15,
-   "floor": 4
+   "explosive": false,
+   "floor": 4,
+   "zone": "Level 4 - Caverns"
   },
   {
    "id": 7460500001,
@@ -16499,7 +16999,9 @@
     2
    ],
    "small_keys": 15,
-   "floor": 4
+   "explosive": false,
+   "floor": 4,
+   "zone": "Level 4 - Caverns"
   },
   {
    "id": 7460951892,
@@ -16527,7 +17029,9 @@
     202
    ],
    "small_keys": 16,
-   "floor": 12
+   "explosive": false,
+   "floor": 12,
+   "zone": "Endings"
   },
   {
    "id": 7460951891,
@@ -16555,7 +17059,9 @@
     202
    ],
    "small_keys": 16,
-   "floor": 12
+   "explosive": false,
+   "floor": 12,
+   "zone": "Endings"
   },
   {
    "id": 7460951890,
@@ -16584,7 +17090,9 @@
     202
    ],
    "small_keys": 16,
-   "floor": 12
+   "explosive": false,
+   "floor": 12,
+   "zone": "Endings"
   },
   {
    "id": 7460951889,
@@ -16612,7 +17120,9 @@
     202
    ],
    "small_keys": 16,
-   "floor": 12
+   "explosive": false,
+   "floor": 12,
+   "zone": "Endings"
   },
   {
    "id": 7460952249,
@@ -16643,7 +17153,9 @@
     202
    ],
    "small_keys": 16,
-   "floor": 12
+   "explosive": false,
+   "floor": 12,
+   "zone": "S endings"
   },
   {
    "id": 7460950005,
@@ -16668,7 +17180,9 @@
     202
    ],
    "small_keys": 16,
-   "floor": 7
+   "explosive": false,
+   "floor": 7,
+   "zone": "Endings"
   },
   {
    "id": 7460951661,
@@ -16697,7 +17211,9 @@
     202
    ],
    "small_keys": 16,
-   "floor": 12
+   "explosive": false,
+   "floor": 12,
+   "zone": "S endings"
   },
   {
    "id": 7460951662,
@@ -16726,7 +17242,9 @@
     202
    ],
    "small_keys": 16,
-   "floor": 12
+   "explosive": false,
+   "floor": 12,
+   "zone": "S endings"
   },
   {
    "id": 7460951663,
@@ -16755,7 +17273,9 @@
     202
    ],
    "small_keys": 16,
-   "floor": 12
+   "explosive": false,
+   "floor": 12,
+   "zone": "S endings"
   },
   {
    "id": 7460951664,
@@ -16784,7 +17304,9 @@
     202
    ],
    "small_keys": 16,
-   "floor": 12
+   "explosive": false,
+   "floor": 12,
+   "zone": "S endings"
   },
   {
    "id": 7460600066,
@@ -16795,7 +17317,8 @@
    "scroll": 7460001105,
    "keys": [],
    "small_keys": 0,
-   "floor": 4
+   "floor": 4,
+   "zone": "Skills"
   },
   {
    "id": 7460600067,
@@ -16806,7 +17329,8 @@
    "scroll": 7460001106,
    "keys": [],
    "small_keys": 0,
-   "floor": 4
+   "floor": 4,
+   "zone": "Skills"
   },
   {
    "id": 7460600068,
@@ -16817,7 +17341,8 @@
    "scroll": 7460001107,
    "keys": [],
    "small_keys": 0,
-   "floor": 4
+   "floor": 4,
+   "zone": "Skills"
   },
   {
    "id": 7460600070,
@@ -16828,7 +17353,8 @@
    "scroll": 7460001102,
    "keys": [],
    "small_keys": 0,
-   "floor": 4
+   "floor": 4,
+   "zone": "Skills"
   },
   {
    "id": 7460600071,
@@ -16839,7 +17365,8 @@
    "scroll": 7460001103,
    "keys": [],
    "small_keys": 0,
-   "floor": 1
+   "floor": 1,
+   "zone": "Skills"
   },
   {
    "id": 7460600072,
@@ -16850,7 +17377,8 @@
    "scroll": 7460001104,
    "keys": [],
    "small_keys": 0,
-   "floor": 4
+   "floor": 4,
+   "zone": "Skills"
   },
   {
    "id": 7460600074,
@@ -16861,7 +17389,8 @@
    "scroll": 7460001108,
    "keys": [],
    "small_keys": 0,
-   "floor": 4
+   "floor": 4,
+   "zone": "Skills"
   },
   {
    "id": 7460600075,
@@ -16872,7 +17401,8 @@
    "scroll": 7460001109,
    "keys": [],
    "small_keys": 0,
-   "floor": 4
+   "floor": 4,
+   "zone": "Skills"
   },
   {
    "id": 7460600078,
@@ -16883,7 +17413,8 @@
    "scroll": 7460001110,
    "keys": [],
    "small_keys": 0,
-   "floor": 4
+   "floor": 4,
+   "zone": "Skills"
   },
   {
    "id": 7460600079,
@@ -16894,7 +17425,8 @@
    "scroll": 7460001111,
    "keys": [],
    "small_keys": 0,
-   "floor": 1
+   "floor": 1,
+   "zone": "Skills"
   },
   {
    "id": 7460600080,
@@ -16905,7 +17437,8 @@
    "scroll": 7460001112,
    "keys": [],
    "small_keys": 0,
-   "floor": 4
+   "floor": 4,
+   "zone": "Skills"
   },
   {
    "id": 7460600122,
@@ -16916,7 +17449,8 @@
    "scroll": 7460001177,
    "keys": [],
    "small_keys": 0,
-   "floor": 4
+   "floor": 4,
+   "zone": "Skills"
   },
   {
    "id": 7460600136,
@@ -16927,7 +17461,8 @@
    "scroll": 7460001113,
    "keys": [],
    "small_keys": 0,
-   "floor": 4
+   "floor": 4,
+   "zone": "Skills"
   },
   {
    "id": 7460600150,
@@ -16938,7 +17473,8 @@
    "scroll": 7460001174,
    "keys": [],
    "small_keys": 0,
-   "floor": 4
+   "floor": 4,
+   "zone": "Skills"
   },
   {
    "id": 7460600151,
@@ -16949,7 +17485,8 @@
    "scroll": 7460001175,
    "keys": [],
    "small_keys": 0,
-   "floor": 4
+   "floor": 4,
+   "zone": "Skills"
   },
   {
    "id": 7460600188,
@@ -16960,7 +17497,8 @@
    "scroll": 7460001161,
    "keys": [],
    "small_keys": 0,
-   "floor": 10
+   "floor": 10,
+   "zone": "Skills"
   },
   {
    "id": 7460600189,
@@ -16971,7 +17509,8 @@
    "scroll": 7460001164,
    "keys": [],
    "small_keys": 0,
-   "floor": 10
+   "floor": 10,
+   "zone": "Skills"
   },
   {
    "id": 7460600199,
@@ -16982,7 +17521,8 @@
    "scroll": 7460001159,
    "keys": [],
    "small_keys": 0,
-   "floor": 4
+   "floor": 4,
+   "zone": "Skills"
   },
   {
    "id": 7460600200,
@@ -16993,7 +17533,8 @@
    "scroll": 7460001160,
    "keys": [],
    "small_keys": 0,
-   "floor": 4
+   "floor": 4,
+   "zone": "Skills"
   },
   {
    "id": 7460600238,
@@ -17004,7 +17545,841 @@
    "scroll": 7460001176,
    "keys": [],
    "small_keys": 0,
-   "floor": 4
+   "floor": 4,
+   "zone": "Skills"
+  },
+  {
+   "id": 7460700002,
+   "name": "Recruit the Girl",
+   "type": "recruit",
+   "tier": 1,
+   "actor": 2,
+   "maps": [
+    1,
+    3,
+    11,
+    20,
+    22,
+    24,
+    29,
+    30,
+    31,
+    39,
+    51,
+    53,
+    103,
+    114,
+    119,
+    160,
+    183,
+    184,
+    185
+   ],
+   "keys": [
+    149
+   ],
+   "explosive": false,
+   "small_keys": 7,
+   "floor": 1,
+   "zone": "Level 1 - Entrance"
+  },
+  {
+   "id": 7460700001,
+   "name": "Recruit Cahara",
+   "type": "recruit",
+   "tier": 1,
+   "actor": 1,
+   "maps": [
+    3,
+    6,
+    8,
+    11,
+    20,
+    22,
+    24,
+    30,
+    31,
+    37,
+    38,
+    39,
+    53,
+    75,
+    107,
+    114,
+    119,
+    148,
+    160,
+    184,
+    185
+   ],
+   "keys": [
+    148
+   ],
+   "explosive": false,
+   "small_keys": 0,
+   "floor": 1,
+   "zone": "Level 1 - Inner hall"
+  },
+  {
+   "id": 7460700003,
+   "name": "Recruit D'arce",
+   "type": "recruit",
+   "tier": 1,
+   "actor": 3,
+   "maps": [
+    3,
+    11,
+    16,
+    20,
+    22,
+    24,
+    30,
+    31,
+    39,
+    53,
+    75,
+    107,
+    114,
+    119,
+    148,
+    160,
+    184,
+    185
+   ],
+   "keys": [
+    148
+   ],
+   "explosive": false,
+   "small_keys": 0,
+   "floor": 1,
+   "zone": "Level 1 - Inner hall"
+  },
+  {
+   "id": 7460700004,
+   "name": "Recruit Enki",
+   "type": "recruit",
+   "tier": 1,
+   "actor": 4,
+   "maps": [
+    3,
+    11,
+    20,
+    22,
+    24,
+    30,
+    31,
+    39,
+    53,
+    75,
+    104,
+    107,
+    114,
+    119,
+    148,
+    160,
+    184,
+    185
+   ],
+   "keys": [
+    148
+   ],
+   "explosive": false,
+   "small_keys": 0,
+   "floor": 1,
+   "zone": "Level 1 - Inner hall"
+  },
+  {
+   "id": 7460700005,
+   "name": "Recruit Ragnvaldr",
+   "type": "recruit",
+   "tier": 1,
+   "actor": 5,
+   "maps": [
+    3,
+    11,
+    20,
+    21,
+    22,
+    24,
+    30,
+    31,
+    39,
+    46,
+    53,
+    68,
+    75,
+    107,
+    108,
+    114,
+    119,
+    148,
+    160,
+    184
+   ],
+   "keys": [
+    148
+   ],
+   "explosive": false,
+   "small_keys": 0,
+   "floor": 1,
+   "zone": "Level 1 - Inner hall"
+  },
+  {
+   "id": 7460700006,
+   "name": "Recruit Le'garde",
+   "type": "recruit",
+   "tier": 1,
+   "actor": 6,
+   "maps": [
+    3,
+    11,
+    20,
+    22,
+    24,
+    30,
+    31,
+    39,
+    53,
+    108,
+    114,
+    119,
+    184
+   ],
+   "keys": [
+    51,
+    202
+   ],
+   "explosive": false,
+   "small_keys": 7,
+   "floor": 1,
+   "zone": "Level 1 - Inner hall"
+  },
+  {
+   "id": 7460700014,
+   "name": "Recruit Nas'hrah",
+   "type": "recruit",
+   "tier": 1,
+   "actor": 14,
+   "maps": [
+    5
+   ],
+   "keys": [],
+   "explosive": false,
+   "small_keys": 7,
+   "floor": 2,
+   "zone": "Level 2 - Blood pit"
+  },
+  {
+   "id": 7460700007,
+   "name": "Recruit Moonless",
+   "type": "recruit",
+   "tier": 2,
+   "actor": 7,
+   "maps": [
+    8,
+    38,
+    160,
+    185
+   ],
+   "keys": [
+    1,
+    2
+   ],
+   "explosive": false,
+   "small_keys": 15,
+   "floor": 4,
+   "zone": "Level 4 - Caverns"
+  },
+  {
+   "id": 7460700011,
+   "name": "Create a Marriage",
+   "type": "marriage",
+   "tier": 2,
+   "actor": 11,
+   "keys": [],
+   "small_keys": 0,
+   "floor": 4,
+   "zone": "Marriage"
+  },
+  {
+   "id": 7460800005,
+   "name": "Craft Torch",
+   "type": "craft",
+   "tier": 1,
+   "result": [
+    "i",
+    5
+   ],
+   "result_item": null,
+   "books": [],
+   "ingredients": [],
+   "campfire": false,
+   "keys": [],
+   "small_keys": 0,
+   "floor": 1,
+   "zone": "Crafting"
+  },
+  {
+   "id": 7460800008,
+   "name": "Craft Cloth fragment",
+   "type": "craft",
+   "tier": 1,
+   "result": [
+    "i",
+    8
+   ],
+   "result_item": null,
+   "books": [
+    7460001136
+   ],
+   "ingredients": [
+    7460003007
+   ],
+   "campfire": false,
+   "keys": [],
+   "small_keys": 0,
+   "floor": 1,
+   "zone": "Crafting"
+  },
+  {
+   "id": 7460800010,
+   "name": "Craft Murky vial",
+   "type": "craft",
+   "tier": 1,
+   "result": [
+    "i",
+    10
+   ],
+   "result_item": null,
+   "books": [
+    7460001013
+   ],
+   "ingredients": [
+    7460001011,
+    7460001012
+   ],
+   "campfire": false,
+   "keys": [],
+   "small_keys": 0,
+   "floor": 1,
+   "zone": "Crafting"
+  },
+  {
+   "id": 7460800014,
+   "name": "Cook Meatpie",
+   "type": "cook",
+   "tier": 1,
+   "result": [
+    "i",
+    14
+   ],
+   "result_item": 7460001014,
+   "books": [
+    7460001003
+   ],
+   "ingredients": [],
+   "campfire": false,
+   "keys": [],
+   "small_keys": 0,
+   "floor": 1,
+   "zone": "Cooking"
+  },
+  {
+   "id": 7460800028,
+   "name": "Craft Blue vial",
+   "type": "craft",
+   "tier": 1,
+   "result": [
+    "i",
+    28
+   ],
+   "result_item": 7460001028,
+   "books": [
+    7460001133
+   ],
+   "ingredients": [],
+   "campfire": false,
+   "keys": [],
+   "small_keys": 0,
+   "floor": 1,
+   "zone": "Crafting"
+  },
+  {
+   "id": 7460800041,
+   "name": "Cook Vegetable pie",
+   "type": "cook",
+   "tier": 1,
+   "result": [
+    "i",
+    41
+   ],
+   "result_item": null,
+   "books": [
+    7460001003
+   ],
+   "ingredients": [],
+   "campfire": false,
+   "keys": [],
+   "small_keys": 0,
+   "floor": 1,
+   "zone": "Cooking"
+  },
+  {
+   "id": 7460800052,
+   "name": "Craft White vial",
+   "type": "craft",
+   "tier": 2,
+   "result": [
+    "i",
+    52
+   ],
+   "result_item": 7460001052,
+   "books": [
+    7460001013
+   ],
+   "ingredients": [
+    7460001028,
+    7460001053
+   ],
+   "campfire": false,
+   "keys": [],
+   "small_keys": 0,
+   "floor": 4,
+   "zone": "Crafting"
+  },
+  {
+   "id": 7460800053,
+   "name": "Craft Purple vial",
+   "type": "craft",
+   "tier": 1,
+   "result": [
+    "i",
+    53
+   ],
+   "result_item": 7460001053,
+   "books": [
+    7460001013
+   ],
+   "ingredients": [
+    7460001028,
+    7460001054
+   ],
+   "campfire": false,
+   "keys": [],
+   "small_keys": 0,
+   "floor": 1,
+   "zone": "Crafting"
+  },
+  {
+   "id": 7460800055,
+   "name": "Cook Fetus",
+   "type": "cook",
+   "tier": 1,
+   "result": [
+    "i",
+    55
+   ],
+   "result_item": null,
+   "books": [
+    7460001056
+   ],
+   "ingredients": [
+    7460001011,
+    7460001034
+   ],
+   "campfire": false,
+   "keys": [],
+   "small_keys": 0,
+   "floor": 1,
+   "zone": "Cooking"
+  },
+  {
+   "id": 7460800061,
+   "name": "Craft Green vial",
+   "type": "craft",
+   "tier": 1,
+   "result": [
+    "i",
+    61
+   ],
+   "result_item": 7460001061,
+   "books": [
+    7460001013
+   ],
+   "ingredients": [
+    7460001028,
+    7460001033
+   ],
+   "campfire": false,
+   "keys": [],
+   "small_keys": 0,
+   "floor": 1,
+   "zone": "Crafting"
+  },
+  {
+   "id": 7460800062,
+   "name": "Cook Bacon & eggs",
+   "type": "cook",
+   "tier": 1,
+   "result": [
+    "i",
+    62
+   ],
+   "result_item": null,
+   "books": [
+    7460001003
+   ],
+   "ingredients": [],
+   "campfire": false,
+   "keys": [],
+   "small_keys": 0,
+   "floor": 1,
+   "zone": "Cooking"
+  },
+  {
+   "id": 7460800063,
+   "name": "Cook Mix'n'match stew",
+   "type": "cook",
+   "tier": 1,
+   "result": [
+    "i",
+    63
+   ],
+   "result_item": null,
+   "books": [
+    7460001003
+   ],
+   "ingredients": [],
+   "campfire": false,
+   "keys": [],
+   "small_keys": 0,
+   "floor": 1,
+   "zone": "Cooking"
+  },
+  {
+   "id": 7460800067,
+   "name": "Craft Light blue vial",
+   "type": "craft",
+   "tier": 1,
+   "result": [
+    "i",
+    67
+   ],
+   "result_item": 7460001067,
+   "books": [
+    7460001089
+   ],
+   "ingredients": [
+    7460001028
+   ],
+   "campfire": false,
+   "keys": [],
+   "small_keys": 0,
+   "floor": 1,
+   "zone": "Crafting"
+  },
+  {
+   "id": 7460800070,
+   "name": "Cook Blueberry pie",
+   "type": "cook",
+   "tier": 1,
+   "result": [
+    "i",
+    70
+   ],
+   "result_item": null,
+   "books": [
+    7460001003
+   ],
+   "ingredients": [],
+   "campfire": false,
+   "keys": [],
+   "small_keys": 0,
+   "floor": 1,
+   "zone": "Cooking"
+  },
+  {
+   "id": 7460800078,
+   "name": "Craft Orange vial",
+   "type": "craft",
+   "tier": 1,
+   "result": [
+    "i",
+    78
+   ],
+   "result_item": 7460001078,
+   "books": [
+    7460001013
+   ],
+   "ingredients": [
+    7460001033,
+    7460001054
+   ],
+   "campfire": false,
+   "keys": [],
+   "small_keys": 0,
+   "floor": 1,
+   "zone": "Crafting"
+  },
+  {
+   "id": 7460800079,
+   "name": "Craft Explosive vial",
+   "type": "craft",
+   "tier": 1,
+   "result": [
+    "i",
+    79
+   ],
+   "result_item": 7460001079,
+   "books": [
+    7460001089
+   ],
+   "ingredients": [
+    7460001011,
+    7460001071
+   ],
+   "campfire": false,
+   "keys": [],
+   "small_keys": 0,
+   "floor": 1,
+   "zone": "Crafting"
+  },
+  {
+   "id": 7460800090,
+   "name": "Craft Brown vial",
+   "type": "craft",
+   "tier": 2,
+   "result": [
+    "i",
+    90
+   ],
+   "result_item": null,
+   "books": [
+    7460001089
+   ],
+   "ingredients": [
+    7460001061,
+    7460001078
+   ],
+   "campfire": false,
+   "keys": [],
+   "small_keys": 0,
+   "floor": 4,
+   "zone": "Crafting"
+  },
+  {
+   "id": 7460800134,
+   "name": "Craft Mix of red and blue",
+   "type": "craft",
+   "tier": 1,
+   "result": [
+    "i",
+    134
+   ],
+   "result_item": 7460001134,
+   "books": [
+    7460001133
+   ],
+   "ingredients": [
+    7460001132
+   ],
+   "campfire": false,
+   "keys": [],
+   "small_keys": 0,
+   "floor": 1,
+   "zone": "Crafting"
+  },
+  {
+   "id": 7460800135,
+   "name": "Craft Mix of red and green",
+   "type": "craft",
+   "tier": 1,
+   "result": [
+    "i",
+    135
+   ],
+   "result_item": null,
+   "books": [
+    7460001133
+   ],
+   "ingredients": [
+    7460001132
+   ],
+   "campfire": false,
+   "keys": [],
+   "small_keys": 0,
+   "floor": 1,
+   "zone": "Crafting"
+  },
+  {
+   "id": 7460800168,
+   "name": "Cook Mushroom stew",
+   "type": "cook",
+   "tier": 1,
+   "result": [
+    "i",
+    168
+   ],
+   "result_item": null,
+   "books": [
+    7460001003
+   ],
+   "ingredients": [],
+   "campfire": false,
+   "keys": [],
+   "small_keys": 0,
+   "floor": 1,
+   "zone": "Cooking"
+  },
+  {
+   "id": 7460800187,
+   "name": "Craft Creation of life II",
+   "type": "craft",
+   "tier": 4,
+   "result": [
+    "i",
+    187
+   ],
+   "result_item": null,
+   "books": [],
+   "ingredients": [],
+   "campfire": false,
+   "keys": [],
+   "small_keys": 0,
+   "floor": 9,
+   "zone": "Crafting"
+  },
+  {
+   "id": 7460800190,
+   "name": "Craft Instructions of Rebirth",
+   "type": "craft",
+   "tier": 4,
+   "result": [
+    "i",
+    190
+   ],
+   "result_item": null,
+   "books": [],
+   "ingredients": [],
+   "campfire": false,
+   "keys": [],
+   "small_keys": 0,
+   "floor": 9,
+   "zone": "Crafting"
+  },
+  {
+   "id": 7460803005,
+   "name": "Craft Ghoul outfit",
+   "type": "craft",
+   "tier": 1,
+   "result": [
+    "a",
+    5
+   ],
+   "result_item": null,
+   "books": [
+    7460001047
+   ],
+   "ingredients": [],
+   "campfire": false,
+   "keys": [],
+   "small_keys": 0,
+   "floor": 1,
+   "zone": "Crafting"
+  },
+  {
+   "id": 7460803006,
+   "name": "Craft Guard outfit",
+   "type": "craft",
+   "tier": 1,
+   "result": [
+    "a",
+    6
+   ],
+   "result_item": null,
+   "books": [
+    7460001047
+   ],
+   "ingredients": [],
+   "campfire": false,
+   "keys": [],
+   "small_keys": 0,
+   "floor": 1,
+   "zone": "Crafting"
+  },
+  {
+   "id": 7460803032,
+   "name": "Craft Pinecone pig",
+   "type": "craft",
+   "tier": 1,
+   "result": [
+    "a",
+    32
+   ],
+   "result_item": null,
+   "books": [],
+   "ingredients": [],
+   "campfire": false,
+   "keys": [],
+   "small_keys": 0,
+   "floor": 1,
+   "zone": "Crafting"
+  },
+  {
+   "id": 7460803048,
+   "name": "Craft Fur outfit",
+   "type": "craft",
+   "tier": 5,
+   "result": [
+    "a",
+    48
+   ],
+   "result_item": 7460003048,
+   "books": [
+    7460001047
+   ],
+   "ingredients": [],
+   "campfire": false,
+   "keys": [],
+   "small_keys": 0,
+   "floor": 10,
+   "zone": "Crafting"
+  },
+  {
+   "id": 7460800153,
+   "name": "Cook Grilled meat",
+   "type": "cook",
+   "tier": 1,
+   "result": [
+    "i",
+    153
+   ],
+   "result_item": 7460001153,
+   "books": [],
+   "ingredients": [],
+   "campfire": true,
+   "keys": [],
+   "small_keys": 0,
+   "floor": 1,
+   "zone": "Cooking"
+  },
+  {
+   "id": 7460800154,
+   "name": "Cook Grilled salmonsnake meat",
+   "type": "cook",
+   "tier": 2,
+   "result": [
+    "i",
+    154
+   ],
+   "result_item": 7460001154,
+   "books": [],
+   "ingredients": [],
+   "campfire": true,
+   "keys": [],
+   "small_keys": 0,
+   "floor": 4,
+   "zone": "Cooking"
   }
  ]
 }

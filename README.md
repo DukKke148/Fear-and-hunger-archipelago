@@ -25,23 +25,49 @@ your inventory:
 **Priced weapons.** Claymore, Miasma, Bone shears and Blue Sin never spawn for free. Once unlocked, they only
 come from their original event, for the same price (the little girl, the blood price…).
 
+**Explosive vials.** Collapsed hallways can only be blown up with an Explosive vial. The one in the Backyard
+leads to the Hidden backyard and all the Thickets (levels 2 to 5), so the logic expects your Explosive vial to be
+unlocked before any check there.
+
 **Runs.** Floors stay random every run, as in the base game. Every new game is a new run: your inventory resets,
 while checks and unlocks carry over.
 
-**Exchanges.** Cooking, alchemy and trades with characters give their real result, except weapons and armors,
-which must be unlocked.
+**Exchanges.** Each kind of exchange has its own option:
+- trades with characters and merchants (like the floor 6 dweller selling an Explosive vial for silver coins)
+  give their real result only once it is unlocked (`trades_require_unlock`, on by default);
+- cooking, from a cookbook or at a campfire, always gives the real dish (`cooking_requires_unlock`, off by default);
+- alchemy and crafting can only make a result once it is unlocked (`alchemy_requires_unlock`, on by default):
+  the recipe stays greyed out until then.
 
-### Checks (310)
+Weapons and armors always have to be unlocked. If you pay for something you have not unlocked, you get a basic
+item instead.
+
+### Checks (308 by default, up to 338)
 | Type | Count |
 |---|---|
 | Entering a zone for the first time | 68 |
-| Beating a creature for the first time (bestiary) | 28 |
-| Beating each boss | 28 |
-| Beating each enemy group (optional) | 141 |
+| Beating a creature for the first time (bestiary) | 33 |
+| Beating each boss | 21 |
+| Beating each enemy group (`troop_checks`) | 139 |
 | Picking up each key item | 15 |
 | Endings A, B, C, D, S | 5 |
 | Ending E, and ending S with each of the 4 starting characters | 5 |
-| Learning each skill (scroll or Hexen table for a Lesser soul) | 20 |
+| Learning each skill, by scroll, at a Hexen table for a Lesser soul or from the Book of the Forgotten Memories (`skill_checks`) | 20 |
+| Recruiting each companion (`recruit_checks`) | 8 |
+| Creating a Marriage (`marriage_check`, never holds progression) | 1 |
+| Cooking each dish for the first time (`cooking_checks`) | 9 |
+| Crafting each recipe for the first time (`crafting_checks`) | 19 |
+
+`recruit_checks` is on by default; marriage, cooking and crafting are off.
+The counts above are for every difficulty together; your `difficulty` removes the checks it does not have (6 in
+`fear_and_hunger`, 5 in `terror_and_starvation`, 8 in `hard`).
+
+- **Recruits**: the Girl, Cahara, D'arce, Enki, Ragnvaldr, Le'garde, Nas'hrah and Moonless. Your starting
+  character does not count.
+- **Cooking**: the 7 cookbook recipes (Meatpie, Vegetable pie, Fetus, Bacon & eggs, Mix'n'match stew, Blueberry pie,
+  Mushroom stew), plus grilled meat and grilled salmonsnake meat at a campfire.
+- **Crafting**: vials, mixes, Torch, Cloth fragment, disguises, Pinecone pig, Creation of life II, Instructions of
+  Rebirth. When the recipe book is one of your unlocks, the logic waits for it.
 
 Endings are read from their final cutscene, and a message shows which ending you got.
 
@@ -55,7 +81,8 @@ Endings are read from their final cutscene, and a message shows which ending you
   them, you are sent back as soon as you try to move in a locked part. Cutscenes are never blocked, so a story
   sequence never breaks.
 - **Traps** (optional): bleeding, poison, infection, parasites, phobia, hunger, fear, torch out. A trap waits
-  until you are free on the map, never during a dialogue, a cutscene or a battle.
+  until you are free on the map, never during a dialogue, a cutscene or a battle. Hunger is the most common: one
+  member of your party, picked at random, loses 30 hunger.
 - **Death Link** (optional).
 
 ## Requirements
@@ -93,6 +120,8 @@ Start from [`examples/Fear & Hunger.yaml`](examples/Fear%20&%20Hunger.yaml). Eve
 
 | Option | Values | Default |
 |---|---|---|
+| `difficulty` | the difficulty you will play: `fear_and_hunger` / `terror_and_starvation` / `hard` (see below) | fear_and_hunger |
+| `goal` | `endings` / `genocide` (see below) | endings |
 | `endings_required` | 1–5: how many endings among A, B, C, D, S | 1 |
 | `required_endings` | specific endings, e.g. `["A", "S"]` (overrides `endings_required`) | empty |
 | `auto_release_collect` | release and collect automatically on goal | true |
@@ -103,12 +132,51 @@ Start from [`examples/Fear & Hunger.yaml`](examples/Fear%20&%20Hunger.yaml). Eve
 | `logic` | `smart` (expects enough gear before going deeper) / `none` | smart |
 | `logic_difficulty` | `relaxed` / `normal` / `strict` | normal |
 | `spawn_mode` | `vanilla_tables` (vanilla depth) / `by_depth` / `anywhere` | vanilla_tables |
-| `enemy_shuffle` | `off` / `mobs_only` / `mobs_and_bosses` / `chaos` | off |
+| `enemy_shuffle` | `off` / `mobs_only` / `mobs_and_bosses` / `chaos` (same as `mobs_and_bosses` for now) | off |
 | `weapon_shuffle` | `off` / `swap_stats` / `swap_items` | off |
 | `endings_hold_progression` | endings can hold progression items | false |
 | `trap_percentage` | 0–100: share of filler replaced by traps | 15 |
 | `trap_weights` | weight of each trap | see template |
+| `recruit_checks` | recruiting each companion is a check | true |
+| `marriage_check` | creating a Marriage is a check | false |
+| `cooking_checks` | cooking each dish is a check | false |
+| `crafting_checks` | crafting each recipe is a check | false |
+| `trades_require_unlock` | trades and merchants only give unlocked results | true |
+| `cooking_requires_unlock` | cooking only gives unlocked dishes | false |
+| `alchemy_requires_unlock` | alchemy and crafting only make unlocked results | true |
+| `hardcore` | every difficulty option at its hardest (see below) | false |
 | `death_link` | Death Link | false |
+
+**Hardcore** overrides the rest of the file: `logic_difficulty: strict`, `randomize_keys: full`,
+`floor_access: per_floor`, `spawn_mode: anywhere`, `enemy_shuffle: chaos`, `weapon_shuffle: swap_items`, and
+trades, cooking and alchemy all require the unlock. It does not change your goal, which checks are on, traps or
+Death Link.
+
+**Difficulty**: pick in the yaml the difficulty you will choose when you start a new game. Some checks only exist
+in some difficulties, so the ones you cannot reach are not in your seed:
+- `fear_and_hunger`: no Traces of Sylvian (`Defeat Sylvian`, The Void 2 is closed) and no S ending.
+- `terror_and_starvation`: everything except the S endings.
+- `hard`: the S endings, but the Girl, Cahara, D'arce, Enki and Le'garde cannot be recruited, so no ending A or C and
+  no Asterisk (the god Le'garde of ending C).
+
+Your goal endings follow: A, B, C and D in the first two, B, D and S in `hard`. Asking for an ending your difficulty
+does not have stops the generation with a clear message. The game warns you if you start a game in another
+difficulty. [Dungeon Nights] is not supported.
+
+**Genocide** (`goal: genocide`): kill every creature of the dungeon at least once in the same run: the creatures of
+the bestiary and the bosses your difficulty has (51 in `fear_and_hunger`, 52 in the others). Gro-goroth and Asterisk
+are left out: they are the final fights of endings B and C, so they end the run and cannot both happen. The Void is
+only entered from the Throne of Ascension and has no way back, so its creatures (Blights, Molded, Greater blight,
+and Sylvian in The Void 2) come last. A new game starts the count over; loading a save goes back to what that save
+had killed. Each new creature shows `Genocide: n/51`, and F7 shows the count and the next ones left. Endings are
+then only checks.
+
+**Enemy shuffle** never moves the companion and end-game fights: they only happen on some routes or in some
+difficulties, so an enemy group sent there could never be fought.
+
+**Playing alone with `randomize_keys: full`** (hardcore included): you start with the 7 Small keys of level 1.
+Almost all of level 1 is behind them and only about six checks are open without them, so a world played alone
+could often not be generated.
 
 ## In game
 - **F7** on the map shows or hides a panel: connection, checks done, unlocks waiting in each part, access items
@@ -121,8 +189,23 @@ Start from [`examples/Fear & Hunger.yaml`](examples/Fear%20&%20Hunger.yaml). Eve
   `give <item> [n]`, `goto <floor or map> [x y]`, `heal`, `trap <name>`, `switch <n> on|off`, `var <n> <value>`,
   `where`, `js <code>` (file only), `help`.
 
+## Tracker (PopTracker)
+`fear_and_hunger_poptracker_v0.2.0.zip` on the [Releases](../../releases) page is a pack for
+[PopTracker](https://github.com/black-sliver/PopTracker). Put the zip in PopTracker's `packs` folder, open it, click
+**AP** and connect with your server address and slot name.
+- One tab per part of the dungeon, one column per floor, one box per zone: green when its checks are reachable with
+  what you have, yellow when only some are, red when none are, grey when done. Click a box to see its checks.
+- A panel with your key items, access items, Explosive vial, priced weapons, skills (scroll unlocked / learned),
+  endings, S endings, companions recruited, dishes cooked and recipes crafted.
+- A **Bestiary** tab: every creature and every boss, lit up once beaten.
+- Everything that goes through Archipelago is tracked by itself. With `randomize_keys: extra` or `off`, the game
+  plugin shares the keys you hold in your current run, so key doors are tracked too.
+- The logic is generated from the apworld's data and matches the generator's.
+
+The public pack uses plain badges. `tools/extract_icons.py` can build a personal copy with the game's icons from your
+own copy of the game; do not share it.
+
 ## Known limitations
-- In-game messages are in French for now.
 - Only tested on the Steam version 1.4.1 (Windows). Fear & Hunger 2: Termina is not supported.
 - When an item is replaced, the game's own "you found…" message may still show the original name. The message at
   the top of the screen shows what you really got.
@@ -131,6 +214,28 @@ Start from [`examples/Fear & Hunger.yaml`](examples/Fear%20&%20Hunger.yaml). Eve
 ## For developers
 - `apworld/fear_and_hunger/`: the world. Zip the `fear_and_hunger` folder to get the `.apworld`.
 - `plugin/`: the RPG Maker MV plugin.
+- `tools/build_data.py`: builds `data/fh_data.json` from the game's `www/data` folder (your own copy).
+  `tools/build_plugin_data.py` turns it into `ArchipelagoFH_Data.js`:
+  ```
+  python tools/build_data.py <path to www/data> apworld/fear_and_hunger/data/fh_data.json
+  python tools/build_plugin_data.py apworld/fear_and_hunger/data/fh_data.json plugin/ArchipelagoFH_Data.js
+  ```
+- `tools/build_poptracker.py`: builds the PopTracker pack from the same data (`tools/poptracker/` holds its scripts):
+  ```
+  python tools/build_poptracker.py apworld/fear_and_hunger/data/fh_data.json apworld/fear_and_hunger/__init__.py poptracker_pack
+  ```
+- `apworld/fear_and_hunger/test/`: generation tests (default options, hardcore over 10 seeds, genocide, every
+  check, few checks, full keys, shuffles), run with Archipelago's own test tools:
+  `python -m pytest worlds/fear_and_hunger/test` from an Archipelago folder where the world is copied into `worlds/`.
+- `tests/`:
+  - `test_data_consistency.js` (the plugin loads and its data matches the apworld's) and `test_poptracker_logic.py`
+    (the pack's logic matches the apworld's, run from the Archipelago folder) need no file of the game.
+  - The other Node.js tests run the plugin in a simulated RPG Maker engine against a real Archipelago server
+    (`MultiServer.py --server_password test`), for example `node tests/test_plugin.js plugin 38281`. They read the
+    game's own files: copy your `www/data` folder to `data/data` at the root of the repository (it is ignored by
+    git, never commit it).
+- `.github/workflows/tests.yml`: GitHub runs everything that needs no file of the game on every push and pull
+  request, against Archipelago 0.6.7 and 0.6.8.
 
 ## License
 [MIT](LICENSE). Fear & Hunger belongs to its creator. This project only contains code and lists of names and

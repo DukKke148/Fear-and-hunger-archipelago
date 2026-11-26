@@ -1,6 +1,7 @@
-"""Fear & Hunger (v1.4.1) for Archipelago, model v0.2.
+"""Fear & Hunger (v1.4.1) for Archipelago, v0.2.0.
 
-Checks: first entry in each zone, bestiary, bosses, enemy groups, key item pickups, endings.
+Checks: first entry in each zone, bestiary, bosses, enemy groups, key item pickups, endings, skills, and
+optionally recruits, marriage, cooking and crafting.
 Items: unlocks. A received weapon, armor, consumable or book is never given directly: it starts spawning
 in the dungeon (furniture, chests, items on the floor, boss loot) in every new run.
 Key items stay where the game puts them, so the game itself guarantees access to every zone.
@@ -14,7 +15,10 @@ from BaseClasses import Item, ItemClassification, Location, LocationProgressType
 from worlds.AutoWorld import WebWorld, World
 from worlds.generic.Rules import add_rule
 
-from .options import FearAndHungerOptions, FloorAccess, Logic, LogicDifficulty, RandomizeKeys
+from Options import OptionError
+
+from .options import (Difficulty, EnemyShuffle, FearAndHungerOptions, FloorAccess, Goal, Logic, LogicDifficulty,
+                      RandomizeKeys, SpawnMode, WeaponShuffle)
 
 EXTRA_SMALL_KEYS = 5  # Small keys sent by the multiworld in 'extra' mode
 
@@ -26,6 +30,29 @@ GEAR = sorted(n for n, i in ITEMS.items() if i["classification"] == "progression
 KEY_NAMES = {i["db_id"]: n for n, i in ITEMS.items() if i["cat"] == "key"}
 ACCESS_NAMES = {i["db_id"]: n for n, i in ITEMS.items() if i["cat"] == "access"}  # tier -> item name
 ITEMS_BY_ID = {i["id"]: i for i in DATA["items"]}
+# What each difficulty takes away (checked in the game's own events):
+# - The Void 2, where the Traces of Sylvian are fought, is only open with STARVATION_MODE (Terror & Starvation and
+#   Hard).
+# - Hard empties the events of the Girl, Cahara, D'arce and Enki, so they cannot be recruited, and endings A and C
+#   (which need the Girl, or Le'garde alive in the party) cannot be reached; neither can Asterisk, the god
+#   Le'garde fought at the end of ending C.
+# - The S endings only exist in Hard.
+S_ENDINGS = {loc["name"] for loc in DATA["locations"] if loc["name"].startswith("Ending S")}
+NOT_IN = {
+    Difficulty.option_fear_and_hunger: {"Defeat Sylvian"} | S_ENDINGS,
+    Difficulty.option_terror_and_starvation: set(S_ENDINGS),
+    Difficulty.option_hard: {"Ending A", "Ending C", "Bestiary: Asterisk", "Recruit the Girl", "Recruit Cahara",
+                             "Recruit D'arce", "Recruit Enki", "Recruit Le'garde"},
+}
+GOAL_ENDINGS = {d: [e for e in "ABCDS" if f"Ending {e}" not in removed] for d, removed in NOT_IN.items()}
+# fights that only happen on some routes or difficulties (companions turning hostile, end-game fights): never
+# swapped by the enemy shuffle, or an enemy group sent there could never be fought
+FIXED_TROOP_CLASSES = {"companion", "endgame"}
+# genocide goal: every creature of the bestiary and every boss, killed in the same run, except the two whose
+# fight ends the game right away (ending B and ending C), which cannot both happen in one run
+RUN_ENDERS = {"Defeat Gro-goroth", "Bestiary: Asterisk"}
+GENOCIDE = [loc for loc in DATA["locations"] if loc["type"] in ("bestiary", "boss") and loc["name"] not in RUN_ENDERS]
+EXPLOSIVE_VIAL = "Explosive vial"  # blows up the collapsed hallways
 FLOOR_ACCESS_NAMES = {int(f): ITEMS_BY_ID[i]["name"] for f, i in DATA["floor_items"].items()}  # floor -> item
 SMALL_KEY = KEY_NAMES[20]
 
@@ -84,15 +111,38 @@ class FearAndHungerWorld(World):
     }
     location_name_groups = {
         t.capitalize(): {n for n, loc in LOCATIONS.items() if loc["type"] == t}
-        for t in ("zone", "bestiary", "boss", "troop", "key", "ending")
+        for t in ("zone", "bestiary", "boss", "troop", "key", "ending", "skill", "recruit", "cook", "craft")
     }
     location_name_groups["Other endings"] = {n for n, loc in LOCATIONS.items() if loc["type"] == "ending_extra"}
 
     # ------------------------------------------------------------------ shuffles
     def generate_early(self) -> None:
         opt = self.options
+        if opt.hardcore:
+            opt.logic_difficulty.value = LogicDifficulty.option_strict
+            opt.randomize_keys.value = RandomizeKeys.option_full
+            opt.floor_access.value = FloorAccess.option_per_floor
+            opt.spawn_mode.value = SpawnMode.option_anywhere
+            opt.enemy_shuffle.value = EnemyShuffle.option_chaos
+            opt.weapon_shuffle.value = WeaponShuffle.option_swap_items
+            opt.trades_require_unlock.value = 1
+            opt.cooking_requires_unlock.value = 1
+            opt.alchemy_requires_unlock.value = 1
+        endings = GOAL_ENDINGS[opt.difficulty.value]
+        wrong = sorted(set(opt.required_endings.value) - set(endings))
+        if wrong:
+            raise OptionError(f"{self.player_name}: ending(s) {', '.join(wrong)} cannot be reached in difficulty "
+                              f"{opt.difficulty.current_key} (possible: {', '.join(endings)})")
+        # unlocks needed by the enabled cooking / crafting checks: they become progression
+        self.always: set = set()  # unlocks not in the pool: always available (filled by create_items)
+        self.recipe_needs: set = set()
+        for loc in self._recipe_locations():
+            self.recipe_needs |= set(self._recipe_items(loc)[0]) | set(self._recipe_items(loc)[1])
+        # collapsed hallways: the Hidden backyard and the Thickets are only reached by blowing one up
+        if any(loc.get("explosive") and self._enabled(loc) for loc in DATA["locations"]):
+            self.recipe_needs.add(EXPLOSIVE_VIAL)
         # enemy groups: slot troop (where the fight is) -> troop actually fought
-        pools = {1: {"mob"}, 2: {"mob", "boss"}, 3: {"mob", "boss", "companion", "endgame"}}
+        pools = {1: {"mob"}, 2: {"mob", "boss"}, 3: {"mob", "boss", "companion", "endgame"} - FIXED_TROOP_CLASSES}
         self.troop_map: Dict[int, int] = {}
         if opt.enemy_shuffle.value:
             pool = sorted(t["id"] for t in DATA["troops"]
@@ -127,6 +177,29 @@ class FearAndHungerWorld(World):
                 self.weapon_map["a"].update({str(a): b for a, b in zip(ids, s)})
 
     # ------------------------------------------------------------------ locations
+    def _enabled(self, loc: Dict[str, Any]) -> bool:
+        t, o = loc["type"], self.options
+        if loc["name"] in NOT_IN[o.difficulty.value]:
+            return False
+        return {"troop": o.troop_checks, "skill": o.skill_checks, "recruit": o.recruit_checks,
+                "marriage": o.marriage_check, "cook": o.cooking_checks, "craft": o.crafting_checks}.get(t, True)
+
+    def _genocide(self) -> List[Dict[str, Any]]:
+        return [loc for loc in GENOCIDE if self._enabled(loc)]
+
+    def _recipe_locations(self) -> List[Dict[str, Any]]:
+        return [loc for loc in DATA["locations"] if loc["type"] in ("cook", "craft") and self._enabled(loc)]
+
+    def _recipe_items(self, loc: Dict[str, Any]) -> tuple:
+        """(any one of these books, all of these items) needed to make a recipe for real."""
+        books = [ITEMS_BY_ID[b]["name"] for b in loc["books"]]
+        needed = [ITEMS_BY_ID[i]["name"] for i in loc["ingredients"]]
+        unlock = self.options.cooking_requires_unlock if loc["type"] == "cook" else \
+            self.options.alchemy_requires_unlock
+        if unlock and loc.get("result_item") and loc["result_item"] not in loc["ingredients"]:
+            needed.append(ITEMS_BY_ID[loc["result_item"]]["name"])
+        return books, needed
+
     def _location_floor(self, loc: Dict[str, Any]) -> int:
         t = loc["type"]
         if t == "troop":
@@ -174,9 +247,7 @@ class FearAndHungerWorld(World):
         self.location_count = 0
         ending_place: Dict[str, Any] = {}  # ending name -> (region, tier) of its check
         for loc in DATA["locations"]:
-            if loc["type"] == "troop" and not self.options.troop_checks:
-                continue
-            if loc["type"] == "skill" and not self.options.skill_checks:
+            if not self._enabled(loc):
                 continue
             tier = self._location_tier(loc)
             if per_floor:
@@ -200,6 +271,15 @@ class FearAndHungerWorld(World):
             if loc["type"] == "skill":
                 scroll = ITEMS_BY_ID[loc["scroll"]]["name"]
                 add_rule(location, lambda state, scroll=scroll: state.has(scroll, self.player))
+            if loc["type"] in ("cook", "craft"):
+                books, needed = self._recipe_items(loc)
+                add_rule(location, lambda state, books=books, needed=needed:
+                         (not books or any(state.has(b, self.player) or b in self.always for b in books))
+                         and all(state.has(n, self.player) or n in self.always for n in needed))
+            if loc.get("explosive"):
+                add_rule(location, lambda state: state.has(EXPLOSIVE_VIAL, self.player) or EXPLOSIVE_VIAL in self.always)
+            if loc["type"] == "marriage":
+                location.progress_type = LocationProgressType.EXCLUDED
             if smart and loc["type"] in ("boss", "ending", "ending_extra"):
                 n = min(len(GEAR), need[tier] + extra)
                 add_rule(location, lambda state, n=n: state.has_from_list_unique(GEAR, self.player, n))
@@ -207,7 +287,7 @@ class FearAndHungerWorld(World):
                 location.progress_type = LocationProgressType.EXCLUDED
         # goal events, one per ending
         for loc in DATA["locations"]:
-            if loc["type"] == "ending":
+            if loc["type"] == "ending" and loc["name"] in ending_place:
                 region, tier = ending_place[loc["name"]]
                 event = FearAndHungerLocation(self.player, loc["name"] + " (goal)", None, region)
                 event.place_locked_item(FearAndHungerItem(loc["name"] + " reached", ItemClassification.progression,
@@ -221,6 +301,14 @@ class FearAndHungerWorld(World):
                     add_rule(event, lambda state, keys=keys, small=small:
                              state.has_all(keys, self.player) and state.has(SMALL_KEY, self.player, small))
                 region.locations.append(event)
+        if self.options.goal.value == Goal.option_genocide:
+            # reachable once every creature is: the plugin checks that they all died in the same run
+            names = [loc["name"] for loc in self._genocide()]
+            event = FearAndHungerLocation(self.player, "Genocide (goal)", None, regions[-1])
+            event.place_locked_item(FearAndHungerItem("Genocide done", ItemClassification.progression, None,
+                                                      self.player))
+            add_rule(event, lambda state: all(state.can_reach_location(n, self.player) for n in names))
+            regions[-1].locations.append(event)
 
     # ------------------------------------------------------------------ items
     def create_items(self) -> None:
@@ -230,7 +318,15 @@ class FearAndHungerWorld(World):
         if self.options.randomize_keys.value == RandomizeKeys.option_full:
             for i in ITEMS.values():
                 if i["cat"] == "key":
-                    pool += [self.create_item(i["name"]) for _ in range(i["copies"])]
+                    copies = i["copies"]
+                    if i["db_id"] == 20 and self.multiworld.players == 1:
+                        # alone, only about six checks are open at the start and the rest of level 1 is behind 7
+                        # Small key doors: the generator cannot fit them, so you start with those 7 keys
+                        start = DATA["small_keys_by_tier"]["1"]
+                        for _ in range(start):
+                            self.multiworld.push_precollected(self.create_item(i["name"]))
+                        copies -= start
+                    pool += [self.create_item(i["name"]) for _ in range(copies)]
         elif self.options.randomize_keys.value == RandomizeKeys.option_extra:
             # bonus keys: the game still has every key at its usual spot, so they are not progression
             for i in ITEMS.values():
@@ -243,16 +339,21 @@ class FearAndHungerWorld(World):
             pool += [self.create_item(n) for n in FLOOR_ACCESS_NAMES.values()]
         total -= len(pool)
         unlocks = [i for i in ITEMS.values() if i["cat"] in ("gear", "book", "consumable")]
-        uniques = sorted(unlocks, key=lambda i: ({"gear": 0, "book": 1, "consumable": 2}[i["cat"]], i["id"]))
+        # what the logic needs comes first, so it is never the part dropped below
+        uniques = sorted(unlocks, key=lambda i: (i["name"] not in self.recipe_needs,
+                                                 {"gear": 0, "book": 1, "consumable": 2}[i["cat"]], i["id"]))
         self.extra_base: List[int] = []
+        self.always: set = set()  # unlocks not in the pool: always available
         if total < len(uniques):
             # not enough checks for every unlock: the least important consumables become always available
             keep, dropped = uniques[:total], uniques[total:]
             self.extra_base = [i["id"] for i in dropped]
+            self.always = {i["name"] for i in dropped}
             uniques = keep
         first = len(pool)
         skill_scrolls = {i["name"] for i in ITEMS.values() if i.get("teaches")} if self.options.skill_checks else set()
-        pool += [self.create_item(i["name"], ItemClassification.progression if i["name"] in skill_scrolls else None)
+        needed = skill_scrolls | self.recipe_needs
+        pool += [self.create_item(i["name"], ItemClassification.progression if i["name"] in needed else None)
                  for i in uniques]
         total += first
         # second copy of each gear piece (a second guaranteed spawn per run), then supplies
@@ -273,13 +374,16 @@ class FearAndHungerWorld(World):
         self.multiworld.itempool += pool
 
     def set_rules(self) -> None:
-        events = [loc["name"] + " reached" for loc in DATA["locations"] if loc["type"] == "ending"]
+        if self.options.goal.value == Goal.option_genocide:
+            self.multiworld.completion_condition[self.player] = lambda state: state.has("Genocide done", self.player)
+            return
+        events = [f"Ending {e} reached" for e in GOAL_ENDINGS[self.options.difficulty.value]]
         required = sorted(self.options.required_endings.value)
         if required:
             needed = [f"Ending {e} reached" for e in required]
             self.multiworld.completion_condition[self.player] = lambda state: state.has_all(needed, self.player)
         else:
-            n = self.options.endings_required.value
+            n = min(self.options.endings_required.value, len(events))
             self.multiworld.completion_condition[self.player] = \
                 lambda state: sum(state.has(e, self.player) for e in events) >= n
 
@@ -294,7 +398,12 @@ class FearAndHungerWorld(World):
     def fill_slot_data(self) -> Dict[str, Any]:
         return {
             "data_version": DATA["data_version"],
-            "endings_required": self.options.endings_required.value,
+            "goal": self.options.goal.value,  # 0 endings, 1 genocide
+            "difficulty": self.options.difficulty.value,  # 0 Fear & Hunger, 1 Terror & Starvation, 2 Hard
+            "genocide_targets": [loc["id"] for loc in self._genocide()]
+            if self.options.goal.value == Goal.option_genocide else [],
+            "endings_required": min(self.options.endings_required.value,
+                                    len(GOAL_ENDINGS[self.options.difficulty.value])),
             "required_endings": sorted(self.options.required_endings.value),
             "auto_release_collect": bool(self.options.auto_release_collect.value),
             "randomize_keys": self.options.randomize_keys.value,  # 0 off, 1 extra, 2 full
@@ -306,5 +415,16 @@ class FearAndHungerWorld(World):
             "weapon_map": self.weapon_map,
             "extra_base": self.extra_base,  # AP item ids that are always available
             "death_link": bool(self.options.death_link.value),
+            "recruit_checks": bool(self.options.recruit_checks.value),
+            "marriage_check": bool(self.options.marriage_check.value),
+            "cooking_checks": bool(self.options.cooking_checks.value),
+            "crafting_checks": bool(self.options.crafting_checks.value),
+            "trades_require_unlock": bool(self.options.trades_require_unlock.value),
+            "cooking_requires_unlock": bool(self.options.cooking_requires_unlock.value),
+            "alchemy_requires_unlock": bool(self.options.alchemy_requires_unlock.value),
+            "hardcore": bool(self.options.hardcore.value),
+            # the options the hardcore mode may have changed
+            "logic_difficulty": self.options.logic_difficulty.value,
+            "logic": self.options.logic.value,  # 0 smart, 1 none (read by the tracker pack)
         }
 

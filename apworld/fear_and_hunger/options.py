@@ -3,10 +3,44 @@ from dataclasses import dataclass
 from Options import Choice, DeathLink, DefaultOnToggle, OptionCounter, OptionSet, PerGameCommonOptions, Range, Toggle
 
 
+class Difficulty(Choice):
+    """
+    The difficulty you will pick when you start a new game. Some checks only exist in some difficulties, so the
+    ones you cannot reach are removed. The game plugin warns you if you pick another difficulty.
+    fear_and_hunger: the normal mode. No Traces of Sylvian (Defeat Sylvian), no S ending.
+    terror_and_starvation: everything but the S endings.
+    hard: the S endings. No Girl, Cahara, D'arce, Enki or Le'garde to recruit, so no ending A or C and no Asterisk
+          (the god Le'garde of ending C).
+    [Dungeon Nights] is not supported.
+    """
+    display_name = "Difficulty"
+    option_fear_and_hunger = 0
+    option_terror_and_starvation = 1
+    option_hard = 2
+    default = 0
+
+
+class Goal(Choice):
+    """
+    endings: reach endings (see Endings Required and Required Endings).
+    genocide: kill every creature of the dungeon at least once in the same run: the creatures of the bestiary and
+              the bosses that exist in your difficulty, except the two that end the game (Gro-goroth, final fight
+              of ending B, and Asterisk, final fight of ending C). A new game starts the count over (loading a save
+              goes back to what that save had killed). Endings are then only checks. Press F7 in the game to see
+              how many are left.
+    """
+    display_name = "Goal"
+    option_endings = 0
+    option_genocide = 1
+    default = 0
+
+
 class EndingsRequired(Range):
     """
-    How many different endings you must reach to finish your goal.
-    Endings A, B, C, D and S count (Ending E and the per-character S endings are checks only).
+    How many different endings you must reach to finish your goal (goal: endings).
+    Endings A, B, C, D and S count (Ending E and the per-character S endings are checks only), as long as your
+    difficulty has them: A, B, C and D in fear_and_hunger and terror_and_starvation, B, D and S in hard. Asking
+    for more than your difficulty has counts as all of them.
     Several runs are allowed in one multiworld: checks and unlocks carry over, your inventory does not.
     """
     display_name = "Endings Required"
@@ -19,7 +53,7 @@ class RequiredEndings(OptionSet):
     """
     Specific endings you must reach to finish your goal, for example ["A", "S"].
     Leave empty to use Endings Required (any endings) instead.
-    Valid values: A, B, C, D, S (Ending E is a check, not a goal).
+    Valid values: A, B, C, D, S (Ending E is a check, not a goal). S only exists in hard, A and C do not.
     """
     display_name = "Required Endings"
     valid_keys = {"A", "B", "C", "D", "S"}
@@ -42,7 +76,9 @@ class RandomizeKeys(Choice):
     extra: same, and the multiworld can also send you keys: each received key is given once, when it
            arrives (not again in later runs). No key logic needed.
     full: keys only come from the multiworld (their usual spot gives nothing but its check) and every
-          received key is given back at the start of each run. Strict key logic.
+          received key is given back at the start of each run. Strict key logic. When you are the only
+          player of the multiworld, you start with the 7 Small keys of level 1 (the seed could not be
+          generated otherwise).
     """
     display_name = "Randomize Keys"
     option_off = 0
@@ -130,7 +166,8 @@ class EnemyShuffle(Choice):
     off: normal enemies.
     mobs_only: normal enemies are swapped with each other.
     mobs_and_bosses: bosses can show up as normal enemies and the other way around.
-    chaos: also companions and end-game enemies. Very hard.
+    chaos: same as mobs_and_bosses for now. Companion and end-game fights only happen on some routes or in some
+           difficulties, so an enemy group sent there could never be fought: they are never swapped.
     """
     display_name = "Enemy Shuffle"
     option_off = 0
@@ -175,7 +212,8 @@ class TrapWeights(OptionCounter):
     """
     How often each trap is picked (0 = never).
     Bleeding, Poison, Infection, Parasites: the status effect (cured as in the normal game).
-    Phobia: a random phobia. Hunger: you get hungrier. Fear: you lose mind.
+    Phobia: a random phobia. Hunger: one member of your party, picked at random, loses 30 hunger.
+    Fear: you lose mind.
     Torch out: your lit torch dies down (if it is not lit, you lose a Torch instead, if you have one).
     """
     display_name = "Trap Weights"
@@ -183,7 +221,7 @@ class TrapWeights(OptionCounter):
     min = 0
     max = 100
     default = {"Bleeding": 3, "Poison": 3, "Infection": 2, "Parasites": 2, "Phobia": 1,
-               "Hunger": 3, "Fear": 3, "Torch out": 3}
+               "Hunger": 6, "Fear": 3, "Torch out": 3}
 
 
 class FearAndHungerDeathLink(DeathLink):
@@ -192,8 +230,77 @@ class FearAndHungerDeathLink(DeathLink):
     """
 
 
+class RecruitChecks(DefaultOnToggle):
+    """
+    Recruiting each companion is a check (8: the Girl, Cahara, D'arce, Enki, Ragnvaldr, Le'garde, Nas'hrah,
+    Moonless). Your starting character does not count.
+    """
+    display_name = "Recruit Checks"
+
+
+class MarriageCheck(Toggle):
+    """
+    Creating a Marriage at a blood circle is a check. It never holds anything important for anyone
+    (the ritual is too situational for the logic).
+    """
+    display_name = "Marriage Check"
+
+
+class CookingChecks(Toggle):
+    """
+    Cooking each dish for the first time is a check: the 7 recipes from cookbooks, plus grilling raw meat and
+    salmonsnake meat at a campfire.
+    """
+    display_name = "Cooking Checks"
+
+
+class CraftingChecks(Toggle):
+    """
+    Crafting each recipe for the first time is a check (19: alchemy vials, torch, cloth fragment, disguises,
+    Pinecone pig...). The recipe book must be unlocked when it is one of your unlocks.
+    """
+    display_name = "Crafting Checks"
+
+
+class TradesRequireUnlock(DefaultOnToggle):
+    """
+    Trades with characters and merchants (for example the floor 6 dweller who sells an Explosive vial for coins)
+    only give their real result once it is unlocked. Otherwise you get a basic item instead.
+    Off: trades always give their real result, except weapons and armors.
+    """
+    display_name = "Trades Require Unlock"
+
+
+class CookingRequiresUnlock(Toggle):
+    """
+    Cooking (cookbook recipes and the campfire) only gives the real dish once it is unlocked.
+    Off: cooking always gives the real dish.
+    """
+    display_name = "Cooking Requires Unlock"
+
+
+class AlchemyRequiresUnlock(DefaultOnToggle):
+    """
+    Alchemy and crafting recipes whose result is one of your unlocks can only be made once it is unlocked.
+    Off: crafting always gives the real result.
+    """
+    display_name = "Alchemy Requires Unlock"
+
+
+class Hardcore(Toggle):
+    """
+    Sets every difficulty option to its hardest value, whatever the rest of this file says:
+    logic_difficulty strict, randomize_keys full, floor_access per_floor, spawn_mode anywhere,
+    enemy_shuffle chaos, weapon_shuffle swap_items, and trades, cooking and alchemy all require the unlock.
+    Goal, checks, traps and Death Link are not changed.
+    """
+    display_name = "Hardcore"
+
+
 @dataclass
 class FearAndHungerOptions(PerGameCommonOptions):
+    difficulty: Difficulty
+    goal: Goal
     endings_required: EndingsRequired
     required_endings: RequiredEndings
     auto_release_collect: AutoReleaseCollect
@@ -209,4 +316,12 @@ class FearAndHungerOptions(PerGameCommonOptions):
     endings_hold_progression: EndingsHoldProgression
     trap_percentage: TrapPercentage
     trap_weights: TrapWeights
+    recruit_checks: RecruitChecks
+    marriage_check: MarriageCheck
+    cooking_checks: CookingChecks
+    crafting_checks: CraftingChecks
+    trades_require_unlock: TradesRequireUnlock
+    cooking_requires_unlock: CookingRequiresUnlock
+    alchemy_requires_unlock: AlchemyRequiresUnlock
+    hardcore: Hardcore
     death_link: FearAndHungerDeathLink

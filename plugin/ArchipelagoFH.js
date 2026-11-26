@@ -2,7 +2,7 @@
 // ArchipelagoFH.js - Archipelago multiworld client for Fear & Hunger (v1.4.1)
 //=============================================================================
 /*:
- * @plugindesc v0.1.0 Connects Fear & Hunger to an Archipelago multiworld. Needs ArchipelagoFH_Data above it.
+ * @plugindesc v0.2.0 Connects Fear & Hunger to an Archipelago multiworld. Needs ArchipelagoFH_Data above it.
  * @author Julien
  *
  * @help
@@ -10,12 +10,14 @@
  *   { "server": "archipelago.gg:38281", "slot": "YourSlotName", "password": "" }
  *
  * Checks: first entry in each zone, first victory against each creature / boss / enemy group, picking up
- * each key item, endings (read from their final cutscene), learning skills (scroll or Hexen table).
+ * each key item, endings (read from their final cutscene), learning skills (scroll or Hexen table), and
+ * optionally recruiting companions, creating a Marriage, cooking and crafting each recipe for the first time.
  *
  * Unlocks: items received from the multiworld are never put in your inventory. Weapons, armors and skill
  * scrolls spawn once per run in a free spot (furniture, chest, floor item or boss loot) at your depth or
  * deeper; consumables and books join the loot rolls. Anything not unlocked is replaced by a basic item.
  * Priced weapons (Claymore, Miasma, Bone shears, Blue Sin) only come from their original event.
+ * Exchanges follow the options: trades and merchants, cooking and alchemy can each require the unlock.
  *
  * Also: access items that gate the deeper parts, traps, Death Link, offline play (checks are sent on
  * reconnection) and a log in www/archipelago_log.txt.
@@ -51,9 +53,9 @@
   var CODE_KIND = { 126: 'i', 127: 'w', 128: 'a' };
   function table(k) { return k === 'i' ? $dataItems : k === 'w' ? $dataWeapons : k === 'a' ? $dataArmors : []; }
   function apId(k, dbId) { return 7460000000 + (k === 'i' ? 1000 : k === 'w' ? 2000 : 3000) + dbId; }
-  // 5 tiers: Partie 1 (levels 1-3), Partie 2 (4-6), Partie 3 (7-8), Ma'habre, Fin (ancient city, 9-10)
+  // 5 tiers: Part 1 (levels 1-3), Part 2 (4-6), Part 3 (7-8), Ma'habre, End (ancient city, 9-10)
   var TIERS = [1, 2, 3, 4, 5];
-  function tierName(t) { return (DATA.tierNames && DATA.tierNames[t]) || ('Palier ' + t); }
+  function tierName(t) { return (DATA.tierNames && DATA.tierNames[t]) || ('Part ' + t); }
   function emptyTiers(v) { var o = {}; TIERS.forEach(function (t) { o[t] = v === 0 ? 0 : []; }); return o; }
   function rnd() { return Math.random(); }
 
@@ -103,6 +105,7 @@
     } catch (e) { /* never break the game for a log line */ }
   };
   Log.info = function (msg) { console.log('[AP] ' + msg); Log.write('INFO ', msg); };
+  Log.warn = function (msg) { console.warn('[AP] ' + msg); Log.write('WARN ', msg); };
   Log.error = function (msg, err) {
     console.error('[AP] ' + msg, err || '');
     Log.write('ERROR', msg + (err ? ' | ' + (err.stack || err.message || err) : ''));
@@ -137,7 +140,7 @@
   }
   // WebGL context lost = black or frozen screen without any script error
   window.addEventListener('webglcontextlost', function () { Log.write('ERROR', 'WebGL context lost (graphics driver)'); }, true);
-  Log.info('==== ArchipelagoFH v0.1.0 started ====');
+  Log.info('==== ArchipelagoFH v0.2.0 started ====');
 
   //---------------------------------------------------------------------------
   // Toast messages on the map
@@ -263,7 +266,7 @@
       try { ws.close(); } catch (e) { /* ignore */ }
       // a plain ws:// server refuses wss:// before opening: try again without TLS right away
       if (!opened && secure && !/^wss?:\/\//.test(self.settings.server)) return self.connect(false);
-      if (wasConnected) Toast.push('Archipelago : connexion perdue, nouvelle tentative...');
+      if (wasConnected) Toast.push('Archipelago: connection lost, retrying...');
       self.scheduleRetry();
     }
     ws.onclose = fail;
@@ -273,7 +276,7 @@
   AP.scheduleRetry = function () {
     var self = this, delay = Math.min(30, 2 + this.retry * 3);
     this.retry++;
-    this.status = 'Deconnecte, nouvel essai dans ' + delay + 's';
+    this.status = 'Disconnected, retrying in ' + delay + 's';
     setTimeout(function () { self.connect(true); }, delay * 1000);
   };
 
@@ -312,7 +315,7 @@
         break;
       case 'ConnectionRefused':
         this.status = 'Refuse : ' + (p.errors || []).join(', ');
-        Toast.push('Archipelago : connexion refusee (' + (p.errors || []).join(', ') + ')');
+        Toast.push('Archipelago: connection refused (' + (p.errors || []).join(', ') + ')');
         this.retry = 10;
         break;
       case 'Connected':
@@ -329,10 +332,10 @@
         if (this.announced === undefined) this.announced = this.items.length; // first list after launch: already known
         for (var r = Math.max(p.index, this.announced); r < this.items.length; r++) {
           var got = this.items[r];
-          var from = got.player === this.slot ? '' : ' (par ' + (got.player === 0 ? 'le serveur' : this.playerName(got.player)) + ')';
+          var from = got.player === this.slot ? '' : ' (from ' + (got.player === 0 ? 'the server' : this.playerName(got.player)) + ')';
           var gotInfo = DATA.items[got.item];
           if (gotInfo && gotInfo[0] === 't') Log.info('Trap received: ' + gotInfo[3] + from);
-          else Toast.push('Debloque : ' + this.itemName(got.item, this.slot) + from);
+          else Toast.push('Unlocked: ' + this.itemName(got.item, this.slot) + from);
           if (this.settings.debug_give_received) Debug.giveApItem(got.item);
         }
         this.announced = Math.max(this.announced, this.items.length);
@@ -361,6 +364,7 @@
   };
 
   AP.onConnected = function (p) {
+    Keys.lastShared = null;  // share the held keys again on the new connection
     var self = this;
     this.connected = true;
     this.retry = 0;
@@ -373,7 +377,7 @@
     (p.checked_locations || []).forEach(function (id) { self.checked[id] = true; });
     this.totalLocations = (p.checked_locations || []).length + (p.missing_locations || []).length;
     if (this.slotData.data_version !== DATA.version) {
-      Toast.push('Archipelago : versions apworld / plugin differentes, mettez les deux a jour !');
+      Toast.push('Archipelago: apworld and plugin versions differ, update both!');
     }
     Log.info('Connected: slot ' + p.slot + ', seed ' + this.seedName + ', ' + this.totalLocations + ' locations, slot_data ' +
              JSON.stringify({ endings: this.slotData.endings_required, spawn: this.slotData.spawn_mode,
@@ -381,8 +385,8 @@
     this.offlineRules = false;
     Shuffle.apply();
     if (this.slotData.death_link) this.send([{ cmd: 'ConnectUpdate', tags: ['DeathLink'] }]);
-    this.status = 'Connecte en tant que ' + this.settings.slot;
-    Toast.push('Archipelago : connecte en tant que ' + this.settings.slot);
+    this.status = 'Connected as ' + this.settings.slot;
+    Toast.push('Archipelago: connected as ' + this.settings.slot);
     Game.onConnected();
     Cache.save();
   };
@@ -393,14 +397,14 @@
     var pkg = this.dataPackage[game];
     return (pkg && pkg.items[id]) || ('Objet ' + id);
   };
-  AP.playerName = function (slot) { return this.players[slot] || ('Joueur ' + slot); };
+  AP.playerName = function (slot) { return this.players[slot] || ('Player ' + slot); };
 
   AP.onPrint = function (p) {
     // what we receive is announced from ReceivedItems; here only what we send to the others
     if (p.type !== 'ItemSend' || !p.item) return;
     var me = this.slot, item = p.item;
     if (item.player === me && p.receiving !== me) {
-      Toast.push('Envoye : ' + this.itemName(item.item, p.receiving) + ' a ' + this.playerName(p.receiving));
+      Toast.push('Sent: ' + this.itemName(item.item, p.receiving) + ' to ' + this.playerName(p.receiving));
     }
   };
 
@@ -414,7 +418,7 @@
     if (this.goalSent || !this.connected) return;
     this.goalSent = true;
     this.send([{ cmd: 'StatusUpdate', status: 30 }]);
-    Toast.push('Archipelago : objectif atteint !');
+    Toast.push('Archipelago: goal complete!');
     if (this.slotData.auto_release_collect !== false) {
       // ask the server to send our remaining items to their owners and give us everything left for us
       var self = this;
@@ -447,7 +451,7 @@
     st.checked.push(id);
     Log.info('Check: ' + (DATA.names[id] || id));
     AP.sendChecks([id]);
-    if (!AP.connected) Toast.push('Check garde, envoye a la reconnexion : ' + (DATA.names[id] || id));
+    if (!AP.connected) Toast.push('Check saved, sent on reconnection: ' + (DATA.names[id] || id));
     Game.checkGoal();
   };
 
@@ -467,9 +471,68 @@
     Game.checkGoal();
   };
 
-  // goal: the listed endings (e.g. A and S) when required_endings is set, otherwise any N endings
+  // difficulty: the seed only has the checks of the difficulty picked in the yaml (slot data "difficulty")
+  var Difficulty = { NAMES: ['Fear & Hunger', 'Terror & Starvation', 'Hard mode'] };
+  // 0 Fear & Hunger, 1 Terror & Starvation, 2 Hard, -1 [Dungeon Nights] (Hard without STARVATION_MODE)
+  Difficulty.current = function () {
+    if (typeof $gameSwitches === 'undefined' || !$gameSwitches || !$gameSwitches.value) return null;
+    var hard = $gameSwitches.value(2190), starvation = $gameSwitches.value(3153);
+    if (hard) return starvation ? 2 : -1;
+    return starvation ? 1 : 0;
+  };
+  Difficulty.check = function () {
+    var want = AP.slotData.difficulty;
+    if (want === undefined || want === null) return true; // older seed
+    var cur = Difficulty.current();
+    if (cur === null || cur === want) return true;
+    var msg = 'This seed is for ' + Difficulty.NAMES[want] + ', not ' + (cur < 0 ? '[Dungeon Nights]' : Difficulty.NAMES[cur]) +
+              ': some checks will be missing or impossible. Start a new game in ' + Difficulty.NAMES[want] + '.';
+    Toast.push(msg);
+    Log.warn(msg);
+    return false;
+  };
+
+  // genocide goal: every creature of the bestiary and every boss killed in the same run (kept in the run, so a
+  // new game starts over and loading a save goes back to what that save had killed)
+  var Genocide = {};
+  Genocide.active = function () { return AP.slotData.goal === 1 && (AP.slotData.genocide_targets || []).length > 0; };
+  Genocide.targets = function () { return AP.slotData.genocide_targets || []; };
+  Genocide.killed = function () {
+    var run = Run.get();
+    if (!run) return {};
+    if (!run.killed) run.killed = {};
+    return run.killed;
+  };
+  Genocide.count = function () {
+    var k = Genocide.killed();
+    return Genocide.targets().filter(function (id) { return k[id]; }).length;
+  };
+  Genocide.record = function (ids) {
+    if (!Genocide.active() || !Run.get()) return;
+    var k = Genocide.killed(), targets = Genocide.targets(), fresh = [];
+    ids.forEach(function (id) {
+      if (targets.indexOf(id) >= 0 && !k[id]) { k[id] = true; fresh.push(id); }
+    });
+    if (!fresh.length) return;
+    var names = fresh.map(function (id) { return (DATA.names[id] || String(id)).replace(/^(Bestiary: |Defeat )/, ''); });
+    Toast.push('Genocide: ' + Genocide.count() + '/' + targets.length + ' (' + names.join(', ') + ')');
+    Log.info('Genocide: ' + names.join(', ') + ' -> ' + Genocide.count() + '/' + targets.length);
+    Game.checkGoal();
+  };
+  Genocide.left = function () {
+    var k = Genocide.killed();
+    return Genocide.targets().filter(function (id) { return !k[id]; })
+      .map(function (id) { return (DATA.names[id] || String(id)).replace(/^(Bestiary: |Defeat )/, ''); });
+  };
+
+  // goal: every creature in one run (genocide), or the listed endings (e.g. A and S) when required_endings is set,
+  // otherwise any N endings
   Game.checkGoal = function () {
     if (!AP.connected) return;
+    if (AP.slotData.goal === 1) {
+      if (Genocide.active() && Genocide.count() >= Genocide.targets().length) AP.sendGoal();
+      return;
+    }
     var required = AP.slotData.required_endings || [];
     if (required.length) {
       var all = required.every(function (e) {
@@ -567,6 +630,10 @@
       Shuffle.swapStartingGear();
       Log.info('New run started at tier ' + cur);
     }
+    if (!run.difficultyChecked) {
+      run.difficultyChecked = true;
+      try { Difficulty.check(); } catch (e) { Log.error('Difficulty check failed', e); }
+    }
     // saves made with an older plugin: make sure every tier exists
     TIERS.forEach(function (t) { if (!run.pending[t]) run.pending[t] = []; if (!run.n[t]) run.n[t] = 0; });
     var started = run.processed === 0;
@@ -627,18 +694,33 @@
     var remaining = Math.max(1, expected - run.n[tier] + 1);
     var mode = 'roll';
     if (pending.length && rnd() < Math.min(1, 1.5 * pending.length / remaining)) {
-      Run.spawn(pending.splice(Math.floor(rnd() * pending.length), 1)[0], 'Trouve');
+      Run.spawn(pending.splice(Math.floor(rnd() * pending.length), 1)[0], 'Found');
       mode = 'spawn';
     }
     run.spotMode[idx] = mode;
     return mode;
   };
 
+  // boss loot: once per boss and per run, even if the boss comes back (Trortur) or has several fights
+  Run.firstBossWin = function (info) {
+    var run = Run.get();
+    if (!run) return false;
+    if (!run.bossLoot) run.bossLoot = {};
+    var bosses = info[1].filter(function (id) { return Math.floor(id / 100000) === 74603; });
+    var key = bosses.length ? bosses.join(',') : 't' + $gameTroop._troopId;
+    if (run.bossLoot[key]) {
+      Log.info('Boss loot already given this run for ' + key);
+      return false;
+    }
+    run.bossLoot[key] = true;
+    return true;
+  };
+
   Run.spawn = function (id, verb) {
     var info = DATA.items[id], obj = table(info[0])[info[1]];
     if (!obj) return;
     $gameParty.gainItem(obj, 1);
-    Toast.push(verb + ' : ' + obj.name + ' (deblocage)');
+    Toast.push(verb + ' : ' + obj.name + ' (unlock)');
   };
 
   //---------------------------------------------------------------------------
@@ -668,6 +750,30 @@
   Keys.count = function (dbId) {
     var id = apId('i', dbId);
     return AP.items.filter(function (it) { return it.item === id; }).length;
+  };
+  // keys held in the current run, shared with trackers (the PopTracker pack) through the server's data storage
+  Keys.storageKey = function () { return 'fh_keys_' + AP.team + '_' + AP.slot; };
+  Keys.lastShared = null;
+  Keys.share = function () {
+    if (!AP.connected || AP.slot == null || !$gameParty || !Game.inRun()) return;
+    var held = {};
+    Object.keys(DATA.keys || {}).forEach(function (id) {
+      var n = $dataItems[id] ? $gameParty.numItems($dataItems[id]) : 0;
+      if (n > 0) held[id] = n;
+    });
+    var text = JSON.stringify(held);
+    if (text === Keys.lastShared) return;
+    Keys.lastShared = text;
+    AP.send([{ cmd: 'Set', key: Keys.storageKey(), default: {}, want_reply: false,
+               operations: [{ operation: 'replace', value: held }] }]);
+  };
+  var _Scene_Map_updateKeys = Scene_Map.prototype.update;
+  Scene_Map.prototype.update = function () {
+    _Scene_Map_updateKeys.call(this);
+    this._apKeysTimer = (this._apKeysTimer || 0) + 1;
+    if (this._apKeysTimer % 60 === 0) {
+      try { Keys.share(); } catch (e) { Log.error('key sharing failed', e); }
+    }
   };
 
   //---------------------------------------------------------------------------
@@ -736,7 +842,7 @@
     var wantsToMove = Input.dir4 !== 0 || (typeof TouchInput !== 'undefined' && TouchInput.isTriggered());
     if (!wantsToMove) return;
     var safe = Access.state(), to = safe && (safe.prev || safe.cur);
-    Toast.push('Acces verrouille : ' + Access.lockName($gameMap.mapId()) + ' (il faut l\'objet Access). Retour en arriere.');
+    Toast.push('Locked: ' + Access.lockName($gameMap.mapId()) + ' (you need its Access item). Sent back.');
     if (!to) { Log.info('Locked tier ' + tier + ' but no safe position known'); return; }
     Access.bouncing = true;
     Log.info('Bounced out of ' + Access.lockName($gameMap.mapId()) + ' to map ' + to.map + ' (' + to.x + ',' + to.y + ')');
@@ -754,8 +860,8 @@
   var Traps = { queue: [], cooldown: 0 };
   var PHOBIAS = [65, 66, 68, 69, 70]; // zoophobia, necrophobia, phasmophobia, rhabdophobia, teratophobia
   var TRAP_STATE = { 1: [5], 2: [17], 3: [55, 56], 4: [61], 6: PHOBIAS }; // no fracture: nothing cures it
-  var TRAP_NAMES = { 1: 'Saignement', 2: 'Empoisonnement', 3: 'Infection', 4: 'Parasites',
-                     6: 'Phobie', 7: 'Faim', 8: 'Peur', 9: 'Torche eteinte' };
+  var TRAP_NAMES = { 1: 'Bleeding', 2: 'Poison', 3: 'Infection', 4: 'Parasites',
+                     6: 'Phobia', 7: 'Hunger', 8: 'Fear', 9: 'Torch out' };
   Traps.storeKey = function () { return 'apfh_traps_' + AP.seedName + '_' + AP.settings.slot; };
   Traps.done = function () {
     try { return parseInt(localStorage.getItem(Traps.storeKey()), 10) || 0; } catch (e) { return 0; }
@@ -785,7 +891,11 @@
       actor.addState(st);
       if (code === 6) detail = ' (' + $dataStates[st].name + ')';
     } else if (code === 7) {
-      actor.changeExp(Math.max(0, actor.currentExp() - 15), false); // hunger is the EXP: lower = hungrier
+      // one member of the party, picked at random, loses 30 hunger (hunger is the EXP: lower = hungrier)
+      var alive = $gameParty.members().filter(function (m) { return m && m.isAlive(); });
+      var who = alive.length ? alive[Math.floor(rnd() * alive.length)] : actor;
+      who.changeExp(Math.max(0, who.currentExp() - 30), false);
+      detail = ' (' + who.name() + ')';
     } else if (code === 8) {
       actor.setMp(Math.max(0, actor.mp - 15)); // mind is the MP
     } else if (code === 9) {
@@ -793,9 +903,9 @@
         $gameVariables.setValue(398, 0); // the torch timer runs out: the game puts it out with its own message
       } else if ($gameParty.numItems($dataItems[5]) > 0) {
         $gameParty.loseItem($dataItems[5], 1);
-        detail = ' (une Torch perdue)';
+        detail = ' (lost a Torch)';
       } else {
-        detail = ' (aucune torche a eteindre)';
+        detail = ' (no torch to put out)';
       }
     }
     return detail;
@@ -806,11 +916,11 @@
     var i = Traps.next();
     if (i < 0) return;
     var it = AP.items[i], info = DATA.items[it.item];
-    var from = it.player === AP.slot ? 'toi-meme' : (it.player === 0 ? 'le serveur' : AP.playerName(it.player));
+    var from = it.player === AP.slot ? 'yourself' : (it.player === 0 ? 'the server' : AP.playerName(it.player));
     var detail = '';
     try { detail = Traps.apply(info[1]); } catch (e) { Log.error('trap ' + info[3] + ' failed', e); }
     Traps.setDone(i + 1);
-    Toast.push('Piege de ' + from + ' : ' + (TRAP_NAMES[info[1]] || info[3]) + detail + ' !');
+    Toast.push('Trap from ' + from + ': ' + (TRAP_NAMES[info[1]] || info[3]) + detail + ' !');
     Traps.cooldown = 180; // about 3 seconds before the next one
   };
 
@@ -824,7 +934,7 @@
     if (now - DeathLink.lastSent < 10) return;
     DeathLink.lastSent = now;
     AP.send([{ cmd: 'Bounce', tags: ['DeathLink'],
-               data: { time: now, source: AP.settings.slot, cause: AP.settings.slot + ' est mort dans Fear & Hunger.' } }]);
+               data: { time: now, source: AP.settings.slot, cause: AP.settings.slot + ' died in Fear & Hunger.' } }]);
     Log.info('DeathLink sent');
   };
   DeathLink.onReceive = function (data) {
@@ -842,7 +952,7 @@
     var d = DeathLink.pending;
     DeathLink.pending = null;
     DeathLink.dying = true;
-    Toast.push('DeathLink : ' + (d.cause || (d.source + ' est mort.')));
+    Toast.push('DeathLink: ' + (d.cause || (d.source + ' died.')));
     if (typeof Scene_Gameover !== 'undefined') SceneManager.goto(Scene_Gameover);
   };
   if (typeof Scene_Gameover !== 'undefined') {
@@ -887,7 +997,7 @@
 
   Debug.giveObj = function (obj, qty) {
     if (!$gameParty || !Game.inRun()) {
-      Toast.push('Test : lance une partie et va au premier etage avant de donner des objets');
+      Toast.push('Test: start a game and reach the first floor before giving items');
       return false;
     }
     $gameParty.gainItem(obj, qty || 1);
@@ -932,19 +1042,19 @@
     var inMap = typeof Scene_Map !== 'undefined' && SceneManager._scene instanceof Scene_Map && $gamePlayer;
     if ((m = /^give\s+(.+?)(?:\s+(\d+))?$/i.exec(t))) {
       var obj = Debug.find(m[1]);
-      if (!obj) return Debug.say('objet introuvable : ' + m[1]);
+      if (!obj) return Debug.say('item not found: ' + m[1]);
       Debug.giveObj(obj, m[2] ? Math.min(99, parseInt(m[2], 10)) : 1);
     } else if ((m = /^goto\s+(.+?)(?:\s+(\d+)\s+(\d+))?$/i.exec(t))) {
-      if (!inMap) return Debug.say('goto : il faut etre sur la carte');
+      if (!inMap) return Debug.say('goto: you must be on the map');
       var map = Debug.target(m[1]);
-      if (!map) return Debug.say('carte ou etage inconnu : ' + m[1]);
+      if (!map) return Debug.say('unknown map or floor: ' + m[1]);
       var pos = m[2] ? [Number(m[2]), Number(m[3])] : (DATA.mapEntry[map] || [1, 1]);
       $gamePlayer.reserveTransfer(map, pos[0], pos[1], 2, 0);
-      Debug.say('teleportation vers ' + DATA.mapNames[map] + ' (' + map + ') en ' + pos.join(','));
+      Debug.say('teleporting to ' + DATA.mapNames[map] + ' (' + map + ') at ' + pos.join(','));
     } else if (/^heal$/i.test(t)) {
       if (!$gameParty) return;
       $gameParty.members().forEach(function (a) { a.recoverAll(); });
-      Debug.say('groupe soigne (PV, esprit et etats)');
+      Debug.say('party healed (HP, mind and states)');
     } else if ((m = /^switch\s+(\d+)\s+(on|off)$/i.exec(t))) {
       $gameSwitches.setValue(Number(m[1]), m[2].toLowerCase() === 'on');
       Debug.say('interrupteur ' + m[1] + ' = ' + m[2]);
@@ -955,20 +1065,20 @@
       var want = 'trap: ' + m[1].toLowerCase(), tid = Object.keys(DATA.items).find(function (k) {
         return DATA.items[k][0] === 't' && DATA.items[k][3].toLowerCase() === want;
       });
-      if (!tid || !inMap) return Debug.say(tid ? 'trap : il faut etre sur la carte' : 'piege inconnu : ' + m[1]);
-      Debug.say('piege ' + DATA.items[tid][3] + Traps.apply(DATA.items[tid][1]));
+      if (!tid || !inMap) return Debug.say(tid ? 'trap: you must be on the map' : 'unknown trap: ' + m[1]);
+      Debug.say('trap ' + DATA.items[tid][3] + Traps.apply(DATA.items[tid][1]));
     } else if (/^where$/i.test(t)) {
-      if (!inMap) return Debug.say('pas sur la carte');
+      if (!inMap) return Debug.say('not on the map');
       var id = $gameMap.mapId();
-      Debug.say('carte ' + id + ' ' + (DATA.mapNames[id] || '') + ' en ' + $gamePlayer.x + ',' + $gamePlayer.y +
-                ' (palier ' + (DATA.tierNames[DATA.mapTier[id]] || '?') + ')');
+      Debug.say('map ' + id + ' ' + (DATA.mapNames[id] || '') + ' at ' + $gamePlayer.x + ',' + $gamePlayer.y +
+                ' (part ' + (DATA.tierNames[DATA.mapTier[id]] || '?') + ')');
     } else if ((m = /^js\s+([\s\S]+)$/i.exec(t))) {
-      if (fromChat) return Debug.say('js : seulement depuis le fichier archipelago_commands.txt');
+      if (fromChat) return Debug.say('js: only from the archipelago_commands.txt file');
       try { Debug.say('js -> ' + String(eval(m[1])).slice(0, 300)); } catch (e) { Debug.say('js erreur : ' + e.message); }
     } else if (/^help$/i.test(t)) {
-      Debug.say('give <objet> [n], goto <etage|carte|n> [x y], heal, trap <nom>, switch <n> on|off, var <n> <v>, where, js <code>');
+      Debug.say('give <item> [n], goto <floor|map|n> [x y], heal, trap <name>, switch <n> on|off, var <n> <v>, where, js <code>');
     } else if (!fromChat) {
-      Debug.say('commande inconnue : ' + t);
+      Debug.say('unknown command: ' + t);
     }
   };
   Debug.pollTimer = 0;
@@ -979,12 +1089,12 @@
     try {
       fs = require('fs');
       file = require('path').join(require('path').dirname(process.mainModule.filename), 'archipelago_commands.txt');
-      if (!fs.existsSync(file)) { fs.writeFileSync(file, '# Commandes de test (une par ligne), lues puis effacees. Tape help pour la liste.\n'); return; }
+      if (!fs.existsSync(file)) { fs.writeFileSync(file, '# Test commands (one per line), read then cleared. Type help for the list.\n'); return; }
     } catch (e) { return; }
     var text = fs.readFileSync(file, 'utf8');
     var lines = text.split(/\r?\n/).filter(function (l) { return l.trim() && l.trim().charAt(0) !== '#'; });
     if (!lines.length) return;
-    fs.writeFileSync(file, '# Commandes de test (une par ligne), lues puis effacees. Tape help pour la liste.\n');
+    fs.writeFileSync(file, '# Test commands (one per line), read then cleared. Type help for the list.\n');
     lines.forEach(function (l) { try { Debug.run(l, false); } catch (e) { Log.error('test command failed: ' + l, e); } });
   };
 
@@ -1111,14 +1221,21 @@
       if (k === 'i' && DATA.keys[dbId]) {
         Game.check(DATA.keys[dbId]);
         if (Keys.mode() === 2) {
-          Toast.push('Cle d\'origine : check envoye (' + $dataItems[dbId].name + ' viendra du multiworld)');
+          Toast.push('Original key spot: check sent (' + $dataItems[dbId].name + ' comes from the multiworld)');
           return true;
         }
       }
       if (k === 'i' && PASS_ITEMS[dbId]) return original.call(this);
-      // exchanges (cooking, alchemy, trading with a character): you paid, so items are real;
-      // weapons and armors still have to be unlocked
-      if (k === 'i' && this.apIsExchange()) return original.call(this);
+      // exchanges (you pay, then receive): campfire cooking follows cooking_requires_unlock, other trades
+      // (characters, merchants) follow trades_require_unlock. Weapons and armors always have to be unlocked.
+      if (k === 'i' && this.apIsExchange()) {
+        var campfire = Exchanges.isCampfire(this);
+        if (!Exchanges.needsUnlock(campfire ? 'cook' : 'trade') || Unlocks.allowed('i', dbId)) {
+          if (campfire) Exchanges.recipeCheck('i', dbId);
+          return original.call(this);
+        }
+        return Exchanges.refuse(table(k)[dbId]);
+      }
       var spot = this.apSpot();
       if (spot && Run.resolveSpot(spot) === 'spawn') return true; // the unlock replaced this spot's content
       var to = k === 'i' ? dbId : Shuffle.itemSwap(k, dbId);
@@ -1131,7 +1248,7 @@
       var sup = Unlocks.randomSupply(), obj = table(sup[0])[sup[1]];
       if (obj) {
         $gameParty.gainItem(obj, 1);
-        Toast.push('Pas encore debloque : ' + table(k)[to].name + ' -> ' + obj.name);
+        Toast.push('Not unlocked yet: ' + table(k)[to].name + ' -> ' + obj.name);
       }
       return true;
     }
@@ -1178,9 +1295,10 @@
     if (info) {
       Game.check(info[0]);
       info[1].forEach(function (id) { Game.check(id); });
+      Genocide.record(info[1]);
       var run = Run.get();
-      if (info[2] && run && run.pending[run.tier].length) {
-        Run.spawn(run.pending[run.tier].shift(), 'Butin de boss');
+      if (info[2] && run && run.pending[run.tier].length && Run.firstBossWin(info)) {
+        Run.spawn(run.pending[run.tier].shift(), 'Boss loot');
       }
     }
   }
@@ -1197,21 +1315,114 @@
       } catch (e) { Log.error('skill check failed', e); }
     };
   }
-  // ... and so is learning one at a Hexen table for a Lesser soul (the table event teaches with Change Skills).
+  // ... and so is learning one at a Hexen table for a Lesser soul (the table event teaches with Change Skills),
+  // or from the Book of the Forgotten Memories (common event 5: one skill of your starting character's line).
   // Starting skills (character creation, intro) come from other events and are not checks.
+  var BOOK_OF_MEMORIES = 5;
+  var SKILL_ALIASES = { 31: 70 }; // the book can teach the Mercenary skill 31, a second copy of Steal (70)
+  Game.isBookOfMemories = function (interpreter) {
+    var ce = typeof $dataCommonEvents !== 'undefined' && $dataCommonEvents ? $dataCommonEvents[BOOK_OF_MEMORIES] : null;
+    return !!(ce && ce.list && interpreter._list === ce.list);
+  };
   var _Game_Interpreter_command318 = Game_Interpreter.prototype.command318;
   Game_Interpreter.prototype.command318 = function () {
     var result = _Game_Interpreter_command318 ? _Game_Interpreter_command318.call(this) : true;
     try {
       var p = this._params || [];
-      if (p[2] === 0 && AP.slotData.skill_checks && DATA.skills[p[3]] &&
-          (DATA.skillTeachers || {})[this._mapId + ':' + this._eventId] && Game.inRun()) {
-        Log.info('Skill learned at a Hexen table: ' + DATA.names[DATA.skills[p[3]]]);
-        Game.check(DATA.skills[p[3]]);
+      var skill = SKILL_ALIASES[p[3]] || p[3];
+      if (p[2] === 0 && AP.slotData.skill_checks && DATA.skills[skill] && Game.inRun()) {
+        var table = (DATA.skillTeachers || {})[this._mapId + ':' + this._eventId];
+        var book = !table && Game.isBookOfMemories(this);
+        if (table || book) {
+          Log.info('Skill learned ' + (table ? 'at a Hexen table' : 'from the Book of the Forgotten Memories') + ': ' +
+                   DATA.names[DATA.skills[skill]]);
+          Game.check(DATA.skills[skill]);
+        }
       }
     } catch (e) { Log.error('hexen skill check failed', e); }
     return result;
   };
+
+  //---------------------------------------------------------------------------
+  // Exchanges, cooking, crafting, recruits
+  //---------------------------------------------------------------------------
+  var Exchanges = {};
+  // does this kind of exchange give its result only once it is unlocked? (old games: trades never did)
+  Exchanges.needsUnlock = function (kind) {
+    var sd = AP.slotData || {};
+    if (kind === 'cook') return !!sd.cooking_requires_unlock;
+    if (kind === 'craft') return !!sd.alchemy_requires_unlock;
+    return !!sd.trades_require_unlock;
+  };
+  Exchanges.isCampfire = function (interp) {
+    // the campfire may run its cooking in a common event: the child remembers it (a flag, not a link to its
+    // parent, so saved interpreters stay free of cycles)
+    if (interp._apCampfire) return true;
+    return !!(interp._eventId && (DATA.campfireEvents || {})[interp._mapId + ':' + interp._eventId]);
+  };
+  // you paid but the result is not unlocked: a basic or unlocked supply instead
+  Exchanges.refuse = function (obj) {
+    var sup = Unlocks.randomSupply(), rep = table(sup[0])[sup[1]];
+    if (rep) $gameParty.gainItem(rep, 1);
+    Toast.push('Not unlocked yet: ' + (obj ? obj.name : '?') + (rep ? ' -> ' + rep.name : ''));
+    return true;
+  };
+  Exchanges.recipe = function (k, dbId) { return (DATA.recipes || {})[k + ':' + dbId] || null; };
+  // first time a recipe is made for real: its cooking / crafting check
+  Exchanges.recipeCheck = function (k, dbId) {
+    var r = Exchanges.recipe(k, dbId), sd = AP.slotData || {};
+    if (!r || !Game.inRun()) return;
+    if (r[1] ? sd.cooking_checks : sd.crafting_checks) Game.check(r[0]);
+  };
+  // a synthesis recipe (YEP_ItemSynthesis) whose result is not unlocked yet cannot be made
+  Exchanges.canSynthesize = function (item) {
+    if (!item || !Game.inRun()) return true;
+    var k = DataManager.isWeapon(item) ? 'w' : DataManager.isArmor(item) ? 'a' : 'i';
+    var r = Exchanges.recipe(k, item.id);
+    var kind = r ? (r[1] ? 'cook' : 'craft') : (k === 'i' ? 'craft' : 'gear');
+    if (kind === 'gear') return Unlocks.allowed(k, item.id);  // weapons and armors always need the unlock
+    return !Exchanges.needsUnlock(kind) || Unlocks.allowed(k, item.id);
+  };
+  if (typeof Window_SynthesisList !== 'undefined') {
+    var _synthIsEnabled = Window_SynthesisList.prototype.isEnabled;
+    Window_SynthesisList.prototype.isEnabled = function (item) {
+      var ok = _synthIsEnabled.call(this, item);
+      try { return ok && Exchanges.canSynthesize(item); } catch (e) { Log.error('synthesis filter failed', e); return ok; }
+    };
+  }
+  if (typeof Scene_Synthesis !== 'undefined') {
+    var _synthDoBuy = Scene_Synthesis.prototype.doBuy;
+    Scene_Synthesis.prototype.doBuy = function (number) {
+      _synthDoBuy.call(this, number);
+      try {
+        var item = this._item;
+        if (item) Exchanges.recipeCheck(DataManager.isWeapon(item) ? 'w' : DataManager.isArmor(item) ? 'a' : 'i', item.id);
+      } catch (e) { Log.error('synthesis check failed', e); }
+    };
+  }
+  var _setupChildCampfire = Game_Interpreter.prototype.setupChild;
+  Game_Interpreter.prototype.setupChild = function (list, eventId) {
+    var campfire = false;
+    try { campfire = Exchanges.isCampfire(this); } catch (e) { campfire = false; }
+    _setupChildCampfire.call(this, list, eventId);
+    if (this._childInterpreter && campfire) this._childInterpreter._apCampfire = true;
+  };
+
+  // recruiting a companion (or creating a Marriage) is a check. Character creation and the starting party
+  // (maps 72, 73, 74) are not.
+  var RECRUIT_IGNORED_MAPS = { 72: true, 73: true, 74: true };
+  if (typeof Game_Party !== 'undefined') {
+    var _Game_Party_addActor = Game_Party.prototype.addActor;
+    Game_Party.prototype.addActor = function (actorId) {
+      var isNew = this._actors.indexOf(actorId) < 0;
+      _Game_Party_addActor.call(this, actorId);
+      try {
+        var r = (DATA.recruits || {})[actorId], sd = AP.slotData || {};
+        if (!isNew || !r || !Game.inRun() || RECRUIT_IGNORED_MAPS[$gameMap.mapId()]) return;
+        if (r[1] ? sd.marriage_check : sd.recruit_checks) Game.check(r[0]);
+      } catch (e) { Log.error('recruit check failed', e); }
+    };
+  }
 
   // endings: read from the final cutscene. On the ending map, each ending shows its own picture
   // (ending_AA = A, ending_B = B, ending_C / ending_C_2 = C, ending_D = D, ending_A = E, ending_S_* = S with
@@ -1223,7 +1434,7 @@
       Game.check(id);
     });
     var names = ids.map(function (id) { return DATA.names[id]; });
-    if (names.length) Toast.push('Fin atteinte : ' + names.join(' + '));
+    if (names.length) Toast.push('Ending reached: ' + names.join(' + '));
   };
   Endings.fromPicture = function (name) {
     if (!$gameMap || $gameMap.mapId() !== DATA.endingMap) return;
@@ -1257,7 +1468,7 @@
       var mapId = $gameMap.mapId();
       if (!AP.hasRules() && Game.inRun() && !Game.warnedNoRules) {
         Game.warnedNoRules = true;
-        Toast.push('Non connecte et aucune partie connue : acces, cles et deblocages pas encore appliques');
+        Toast.push('Not connected and no known game: access, keys and unlocks not applied yet');
       }
       Access.onMapStart(mapId);
       if (DATA.zones[mapId] && Access.mapAllowed(mapId)) Game.check(DATA.zones[mapId]);
@@ -1279,34 +1490,39 @@
   Status.lines = function () {
     var done = Object.keys(AP.checked).length, total = AP.totalLocations || '?';
     var unlocked = Object.keys(Unlocks.counts()).length, run = Run.get(), tier = Game.currentTier();
-    var lines = ['AP : ' + AP.status + ' | checks ' + done + '/' + total + ' | objets debloques : ' + unlocked];
-    var keysInfo = Keys.mode() ? '  | Small keys recues : ' + Keys.count(20) : '';
+    var lines = ['AP: ' + AP.status + ' | checks ' + done + '/' + total + ' | unlocked: ' + unlocked];
+    var keysInfo = Keys.mode() ? '  | Small keys received: ' + Keys.count(20) : '';
     if (Access.mode() === 1) {
-      lines.push('Acces : ' + TIERS.map(function (t) { return tierName(t) + (Access.allowed(t) ? ' oui' : ' non'); }).join(' | ') + keysInfo);
+      lines.push('Access: ' + TIERS.map(function (t) { return tierName(t) + (Access.allowed(t) ? ' yes' : ' no'); }).join(' | ') + keysInfo);
     } else if (Access.mode() === 2) {
       var floors = Object.keys(DATA.floorNames).map(Number).sort(function (a, b) { return a - b; });
       var open = floors.filter(Access.floorAllowed).map(function (f) { return DATA.floorNames[f].replace('Level ', 'L'); });
-      lines.push('Etages ouverts : ' + open.join(', ') + ' (' + open.length + '/' + floors.length + ')' + keysInfo);
+      lines.push('Open floors: ' + open.join(', ') + ' (' + open.length + '/' + floors.length + ')' + keysInfo);
     } else if (keysInfo) {
       lines.push(keysInfo.slice(4));
     }
     if (!run) {
-      lines.push(AP.connected ? 'Run pas encore commence (il demarre au premier etage)' : 'Run en attente de connexion');
+      lines.push(AP.connected ? 'Run not started yet (it starts on the first floor)' : 'Run waiting for the connection');
       return lines;
     }
+    if (Genocide.active()) {
+      var left = Genocide.left();
+      lines.push('Genocide this run: ' + Genocide.count() + '/' + Genocide.targets().length +
+                 (left.length ? '  | left: ' + left.slice(0, 5).join(', ') + (left.length > 5 ? ' +' + (left.length - 5) : '') : ''));
+    }
     var p = run.pending;
-    lines.push('En attente : ' + TIERS.map(function (t) { return tierName(t) + ' ' + (p[t] || []).length; }).join(' | ') +
-               '  (tu es : ' + tierName(tier) + ')');
+    lines.push('Waiting: ' + TIERS.map(function (t) { return tierName(t) + ' ' + (p[t] || []).length; }).join(' | ') +
+               '  (you are in: ' + tierName(tier) + ')');
     var here = p[Math.max(tier, run.tier)] || [];
     if (here.length) {
       var names = here.slice(0, 4).map(function (id) { return DATA.items[id] ? DATA.items[id][3] : id; });
-      lines.push('A trouver ici : ' + names.join(', ') + (here.length > 4 ? ' +' + (here.length - 4) : ''));
+      lines.push('To find here: ' + names.join(', ') + (here.length > 4 ? ' +' + (here.length - 4) : ''));
     } else {
-      lines.push('Rien a trouver dans ce palier pour l\'instant');
+      lines.push('Nothing to find in this part for now');
     }
     var priced = Object.keys(Unlocks.counts()).filter(function (id) { return DATA.items[id] && DATA.items[id][9]; });
     if (priced.length) {
-      lines.push('A leur place d\'origine (avec leur prix) : ' + priced.map(function (id) { return DATA.items[id][3]; }).join(', '));
+      lines.push('At their original spot (for their price): ' + priced.map(function (id) { return DATA.items[id][3]; }).join(', '));
     }
     return lines;
   };
@@ -1316,7 +1532,7 @@
   Sprite_APPanel.prototype.constructor = Sprite_APPanel;
   Sprite_APPanel.prototype.initialize = function () {
     Sprite.prototype.initialize.call(this);
-    this.bitmap = new Bitmap(Graphics.boxWidth, 84);
+    this.bitmap = new Bitmap(Graphics.boxWidth, 8 + 25 * 7);
     this.bitmap.fontSize = 18;
     this.y = 48;
     this.visible = false;
@@ -1366,12 +1582,13 @@
     if (this._apStatusText !== AP.status) {
       this._apStatusText = AP.status;
       this._apStatus.bitmap.clear();
-      this._apStatus.bitmap.drawText('Archipelago : ' + AP.status + (AP.connected ? '' : AP.offlineRules ?
-        ' (hors ligne : regles de la derniere connexion)' : ' (jamais connecte : regles inactives)'), 8, 0, Graphics.boxWidth - 16, 28, 'left');
+      this._apStatus.bitmap.drawText('Archipelago: ' + AP.status + (AP.connected ? '' : AP.offlineRules ?
+        ' (offline: rules of the last connection)' : ' (never connected: rules inactive)'), 8, 0, Graphics.boxWidth - 16, 28, 'left');
     }
   };
-  console.log('[AP] ArchipelagoFH v0.1.0 loaded');
+  console.log('[AP] ArchipelagoFH v0.2.0 loaded');
 
   // for tests and debugging from the console
-  AP._internals = { Game: Game, Run: Run, Unlocks: Unlocks, Shuffle: Shuffle, Traps: Traps, DeathLink: DeathLink };
+  AP._internals = { Genocide: Genocide, Difficulty: Difficulty, Toast: Toast, Status: Status, Game: Game, Run: Run, Unlocks: Unlocks, Shuffle: Shuffle, Traps: Traps, DeathLink: DeathLink,
+                    Exchanges: Exchanges, Keys: Keys };
 })();
