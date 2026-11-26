@@ -3,31 +3,12 @@ from dataclasses import dataclass
 from Options import Choice, DeathLink, DefaultOnToggle, OptionCounter, OptionSet, PerGameCommonOptions, Range, Toggle
 
 
-class Difficulty(Choice):
-    """
-    The difficulty you will pick when you start a new game. Some checks only exist in some difficulties, so the
-    ones you cannot reach are removed. The game plugin warns you if you pick another difficulty.
-    fear_and_hunger: the normal mode. No Traces of Sylvian (Defeat Sylvian), no S ending.
-    terror_and_starvation: everything but the S endings.
-    hard: the S endings. No Girl, Cahara, D'arce, Enki or Le'garde to recruit, so no ending A or C and no Asterisk
-          (the god Le'garde of ending C).
-    [Dungeon Nights] is not supported.
-    """
-    display_name = "Difficulty"
-    option_fear_and_hunger = 0
-    option_terror_and_starvation = 1
-    option_hard = 2
-    default = 0
-
-
 class Goal(Choice):
     """
     endings: reach endings (see Endings Required and Required Endings).
-    genocide: kill every creature of the dungeon at least once in the same run: the creatures of the bestiary and
-              the bosses that exist in your difficulty, except the two that end the game (Gro-goroth, final fight
-              of ending B, and Asterisk, final fight of ending C). A new game starts the count over (loading a save
-              goes back to what that save had killed). Endings are then only checks. Press F7 in the game to see
-              how many are left.
+    genocide: kill every creature of the dungeon at least once, over all your runs: the 33 creatures of the
+              bestiary and the 21 bosses (Asterisk does not count in hardcore). Endings are then only checks.
+              Press F7 in the game to see how many are left.
     """
     display_name = "Goal"
     option_endings = 0
@@ -38,9 +19,9 @@ class Goal(Choice):
 class EndingsRequired(Range):
     """
     How many different endings you must reach to finish your goal (goal: endings).
-    Endings A, B, C, D and S count (Ending E and the per-character S endings are checks only), as long as your
-    difficulty has them: A, B, C and D in fear_and_hunger and terror_and_starvation, B, D and S in hard. Asking
-    for more than your difficulty has counts as all of them.
+    Endings A, B, C, D and S count (Ending E and the per-character S endings are checks only). S only exists in
+    the game's Hard mode, A and C do not: pick the game difficulty of each run accordingly. In hardcore (Hard mode
+    only), B, D and S count, and asking for more counts as all three.
     Several runs are allowed in one multiworld: checks and unlocks carry over, your inventory does not.
     """
     display_name = "Endings Required"
@@ -53,7 +34,8 @@ class RequiredEndings(OptionSet):
     """
     Specific endings you must reach to finish your goal, for example ["A", "S"].
     Leave empty to use Endings Required (any endings) instead.
-    Valid values: A, B, C, D, S (Ending E is a check, not a goal). S only exists in hard, A and C do not.
+    Valid values: A, B, C, D, S (Ending E is a check, not a goal). S only exists in the game's Hard mode, A and C
+    do not, so they need different runs. In hardcore (Hard mode only), A and C are refused.
     """
     display_name = "Required Endings"
     valid_keys = {"A", "B", "C", "D", "S"}
@@ -292,14 +274,16 @@ class Hardcore(Toggle):
     Sets every difficulty option to its hardest value, whatever the rest of this file says:
     logic_difficulty strict, randomize_keys full, floor_access per_floor, spawn_mode anywhere,
     enemy_shuffle chaos, weapon_shuffle swap_items, and trades, cooking and alchemy all require the unlock.
-    Goal, checks, traps and Death Link are not changed.
+    Every run must also be played in the game's Hard mode (the game warns you otherwise). Hard mode has no Girl,
+    Cahara, D'arce, Enki or Le'garde to recruit, so their recruit checks, endings A and C and Asterisk (the god
+    Le'garde of ending C) are removed, and only endings B, D and S can be goals.
+    Traps and Death Link are not changed.
     """
     display_name = "Hardcore"
 
 
 @dataclass
 class FearAndHungerOptions(PerGameCommonOptions):
-    difficulty: Difficulty
     goal: Goal
     endings_required: EndingsRequired
     required_endings: RequiredEndings

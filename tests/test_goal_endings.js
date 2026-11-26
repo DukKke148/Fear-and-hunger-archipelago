@@ -1,4 +1,4 @@
-// Goal with required_endings ["B", "S"] (difficulty: hard): ending B alone is not enough, B + S completes the goal,
+// Goal with required_endings ["B", "S"]: ending B alone is not enough, B + S completes the goal,
 // then the plugin asks the server for !release and !collect.
 // usage: node test_goal_endings.js <plugin dir> <port>
 'use strict';

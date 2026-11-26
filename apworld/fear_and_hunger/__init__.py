@@ -17,7 +17,7 @@ from worlds.generic.Rules import add_rule
 
 from Options import OptionError
 
-from .options import (Difficulty, EnemyShuffle, FearAndHungerOptions, FloorAccess, Goal, Logic, LogicDifficulty,
+from .options import (EnemyShuffle, FearAndHungerOptions, FloorAccess, Goal, Logic, LogicDifficulty,
                       RandomizeKeys, SpawnMode, WeaponShuffle)
 
 EXTRA_SMALL_KEYS = 5  # Small keys sent by the multiworld in 'extra' mode
@@ -30,28 +30,20 @@ GEAR = sorted(n for n, i in ITEMS.items() if i["classification"] == "progression
 KEY_NAMES = {i["db_id"]: n for n, i in ITEMS.items() if i["cat"] == "key"}
 ACCESS_NAMES = {i["db_id"]: n for n, i in ITEMS.items() if i["cat"] == "access"}  # tier -> item name
 ITEMS_BY_ID = {i["id"]: i for i in DATA["items"]}
-# What each difficulty takes away (checked in the game's own events):
-# - The Void 2, where the Traces of Sylvian are fought, is only open with STARVATION_MODE (Terror & Starvation and
-#   Hard).
-# - Hard empties the events of the Girl, Cahara, D'arce and Enki, so they cannot be recruited, and endings A and C
-#   (which need the Girl, or Le'garde alive in the party) cannot be reached; neither can Asterisk, the god
-#   Le'garde fought at the end of ending C.
-# - The S endings only exist in Hard.
-S_ENDINGS = {loc["name"] for loc in DATA["locations"] if loc["name"].startswith("Ending S")}
-NOT_IN = {
-    Difficulty.option_fear_and_hunger: {"Defeat Sylvian"} | S_ENDINGS,
-    Difficulty.option_terror_and_starvation: set(S_ENDINGS),
-    Difficulty.option_hard: {"Ending A", "Ending C", "Bestiary: Asterisk", "Recruit the Girl", "Recruit Cahara",
-                             "Recruit D'arce", "Recruit Enki", "Recruit Le'garde"},
-}
-GOAL_ENDINGS = {d: [e for e in "ABCDS" if f"Ending {e}" not in removed] for d, removed in NOT_IN.items()}
+# The game's Hard mode, which hardcore asks for (checked in the game's own events): it empties the events of the
+# Girl, Cahara, D'arce and Enki, so they cannot be recruited, and endings A and C (which need the Girl, or Le'garde
+# alive in the party) cannot be reached; neither can Asterisk, the god Le'garde fought at the end of ending C.
+# Other difficulty limits do not matter outside hardcore: every run can be played in another difficulty (the
+# Traces of Sylvian need Terror & Starvation or Hard, the S endings need Hard) and checks carry over.
+NOT_IN_HARD_MODE = {"Ending A", "Ending C", "Bestiary: Asterisk", "Recruit the Girl", "Recruit Cahara",
+                    "Recruit D'arce", "Recruit Enki", "Recruit Le'garde"}
+ALL_GOAL_ENDINGS = list("ABCDS")
+HARD_MODE_GOAL_ENDINGS = [e for e in ALL_GOAL_ENDINGS if f"Ending {e}" not in NOT_IN_HARD_MODE]
 # fights that only happen on some routes or difficulties (companions turning hostile, end-game fights): never
 # swapped by the enemy shuffle, or an enemy group sent there could never be fought
 FIXED_TROOP_CLASSES = {"companion", "endgame"}
-# genocide goal: every creature of the bestiary and every boss, killed in the same run, except the two whose
-# fight ends the game right away (ending B and ending C), which cannot both happen in one run
-RUN_ENDERS = {"Defeat Gro-goroth", "Bestiary: Asterisk"}
-GENOCIDE = [loc for loc in DATA["locations"] if loc["type"] in ("bestiary", "boss") and loc["name"] not in RUN_ENDERS]
+# genocide goal: every creature of the bestiary and every boss, killed at least once over all runs
+GENOCIDE = [loc for loc in DATA["locations"] if loc["type"] in ("bestiary", "boss")]
 EXPLOSIVE_VIAL = "Explosive vial"  # blows up the collapsed hallways
 FLOOR_ACCESS_NAMES = {int(f): ITEMS_BY_ID[i]["name"] for f, i in DATA["floor_items"].items()}  # floor -> item
 SMALL_KEY = KEY_NAMES[20]
@@ -128,11 +120,11 @@ class FearAndHungerWorld(World):
             opt.trades_require_unlock.value = 1
             opt.cooking_requires_unlock.value = 1
             opt.alchemy_requires_unlock.value = 1
-        endings = GOAL_ENDINGS[opt.difficulty.value]
+        endings = self._goal_endings()
         wrong = sorted(set(opt.required_endings.value) - set(endings))
         if wrong:
-            raise OptionError(f"{self.player_name}: ending(s) {', '.join(wrong)} cannot be reached in difficulty "
-                              f"{opt.difficulty.current_key} (possible: {', '.join(endings)})")
+            raise OptionError(f"{self.player_name}: ending(s) {', '.join(wrong)} cannot be reached in hardcore, "
+                              f"which is played in the game's Hard mode (possible: {', '.join(endings)})")
         # unlocks needed by the enabled cooking / crafting checks: they become progression
         self.always: set = set()  # unlocks not in the pool: always available (filled by create_items)
         self.recipe_needs: set = set()
@@ -179,10 +171,13 @@ class FearAndHungerWorld(World):
     # ------------------------------------------------------------------ locations
     def _enabled(self, loc: Dict[str, Any]) -> bool:
         t, o = loc["type"], self.options
-        if loc["name"] in NOT_IN[o.difficulty.value]:
+        if o.hardcore and loc["name"] in NOT_IN_HARD_MODE:
             return False
         return {"troop": o.troop_checks, "skill": o.skill_checks, "recruit": o.recruit_checks,
                 "marriage": o.marriage_check, "cook": o.cooking_checks, "craft": o.crafting_checks}.get(t, True)
+
+    def _goal_endings(self) -> List[str]:
+        return HARD_MODE_GOAL_ENDINGS if self.options.hardcore else ALL_GOAL_ENDINGS
 
     def _genocide(self) -> List[Dict[str, Any]]:
         return [loc for loc in GENOCIDE if self._enabled(loc)]
@@ -377,7 +372,7 @@ class FearAndHungerWorld(World):
         if self.options.goal.value == Goal.option_genocide:
             self.multiworld.completion_condition[self.player] = lambda state: state.has("Genocide done", self.player)
             return
-        events = [f"Ending {e} reached" for e in GOAL_ENDINGS[self.options.difficulty.value]]
+        events = [f"Ending {e} reached" for e in self._goal_endings()]
         required = sorted(self.options.required_endings.value)
         if required:
             needed = [f"Ending {e} reached" for e in required]
@@ -399,11 +394,11 @@ class FearAndHungerWorld(World):
         return {
             "data_version": DATA["data_version"],
             "goal": self.options.goal.value,  # 0 endings, 1 genocide
-            "difficulty": self.options.difficulty.value,  # 0 Fear & Hunger, 1 Terror & Starvation, 2 Hard
+            "hard_mode": bool(self.options.hardcore.value),  # every run must be played in the game's Hard mode
             "genocide_targets": [loc["id"] for loc in self._genocide()]
             if self.options.goal.value == Goal.option_genocide else [],
             "endings_required": min(self.options.endings_required.value,
-                                    len(GOAL_ENDINGS[self.options.difficulty.value])),
+                                    len(self._goal_endings())),
             "required_endings": sorted(self.options.required_endings.value),
             "auto_release_collect": bool(self.options.auto_release_collect.value),
             "randomize_keys": self.options.randomize_keys.value,  # 0 off, 1 extra, 2 full

@@ -31,12 +31,12 @@ dungeon instead of going straight to your inventory.
 - Access items (Access: Part 2, Part 3, Ma'habre, End, or one per floor) gate the deeper parts of the dungeon.
 - Optional traps (bleeding, poison, infection, parasites, phobia, hunger, fear, torch out) and Death Link.
 - Optional enemy and weapon shuffles.
-- A hardcore mode that sets every difficulty option to its hardest value.
+- A hardcore mode that sets every difficulty option to its hardest value and is played in the game's Hard mode.
 - The Hidden backyard and the Thickets need an unlocked Explosive vial, to blow up the collapsed hallway.
 
 ## What is the goal?
 
 Reach a number of endings, or specific endings (for example A and S). Or, with `goal: genocide`, kill every
-creature of the bestiary and every boss of your difficulty at least once in the same run (except Gro-goroth and
-Asterisk, whose fights end the run). Set `difficulty` to the difficulty you will play: some checks only exist in
-some difficulties.
+creature of the bestiary and every boss at least once, over all your runs. Some checks need a given game difficulty
+(the Traces of Sylvian need Terror & Starvation or Hard, the S endings need Hard, endings A and C cannot be done in
+Hard): pick the difficulty of each run for what you still need.

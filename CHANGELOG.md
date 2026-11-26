@@ -25,12 +25,11 @@
 - PopTracker pack: checks per zone and floor with the generator's logic, and a progress panel (keys, access, skills,
   bosses, endings, S endings, companions, cooking, crafting). The game plugin shares the keys held in the current run
   with it through the server's data storage.
-- New option `difficulty` (`fear_and_hunger`, `terror_and_starvation`, `hard`): the checks your difficulty does not
-  have are removed (Traces of Sylvian outside Terror & Starvation and Hard; S endings outside Hard; in Hard the
-  Girl, Cahara, D'arce, Enki and Le'garde recruits, endings A and C and Asterisk). Goal endings follow, and the
-  game warns you if you start in another difficulty.
-- New goal, `goal: genocide`: kill every creature of your difficulty at least once in the same run (51 or 52),
-  except Gro-goroth and Asterisk whose fights end the run. The count shows on each new kill and in the F7 panel.
+- Hardcore also asks for the game's Hard mode in every run (the game warns you otherwise). Hard has no Girl,
+  Cahara, D'arce, Enki or Le'garde to recruit, so in hardcore those recruit checks, endings A and C and Asterisk are
+  removed, and only B, D and S can be goal endings.
+- New goal, `goal: genocide`: kill every creature (33 from the bestiary, 21 bosses) at least once, over all your
+  runs. The count shows on each new kill and in the F7 panel.
 - Fixed: `enemy_shuffle: chaos` could send an enemy group into a companion or end-game fight, which only happens on
   some routes or difficulties, making its check impossible. Those fights are no longer swapped, so `chaos` is the
   same as `mobs_and_bosses` for now.

@@ -70,32 +70,40 @@ const lastGain = () => G('gained.length ? gained[gained.length - 1][0] : null');
   new ctx.Scene_Boot().start();
   for (let i = 0; i < 50 && !AP.connected; i++) await sleep(100);
   const targets = AP.slotData.genocide_targets || [];
-  ok('slot data: goal genocide, 51 targets in Fear & Hunger (no Sylvian, no Gro-goroth, no Asterisk)',
-     AP.slotData.goal === 1 && AP.slotData.difficulty === 0 && targets.length === 51, targets.length);
+  ok('slot data: goal genocide, 54 targets (33 creatures, 21 bosses)', AP.slotData.goal === 1 && targets.length === 54,
+     targets.length);
   const N = targets.length;
   const toasts = () => G('ArchipelagoFH._internals.Toast.queue.join(" | ")');
   G('DataManager.setupNewGame()'); enter(73); enter(1, 10, 10);
   ok('a run exists', !!G('$gameSystem._ap.run'));
-  ok('right difficulty: no warning', !toasts().includes('This seed is for'), toasts());
+  ok('not hardcore: any difficulty, no warning', !toasts().includes('Hardcore seed'), toasts());
   const troops = Object.keys(DATA.troops);
   const win = t => G(`var $gameTroop = { _troopId: ${t} }; BattleManager.processVictory();`);
   const count = () => G('ArchipelagoFH._internals.Genocide.count()');
   win(1); win(2);
   ok('two Guard groups count once', count() === 1, count());
   const panel = G('ArchipelagoFH._internals.Status.lines().join(" / ")');
-  ok('the F7 panel shows the count', panel.includes('Genocide this run: 1/' + N), panel);
+  ok('the F7 panel shows the count', panel.includes('Genocide: 1/' + N), panel);
   // every fight but one creature's
   const last = 'Defeat Trortur', lastId = Number(loc(last));
   for (const t of troops) if (!DATA.troops[t][1].includes(lastId)) win(t);
   await sleep(800);
   ok('all but Trortur: one left, no goal yet', count() === N - 1 && !AP.goalSent, count());
+  const panel2 = G('ArchipelagoFH._internals.Status.lines().join(" / ")');
+  ok('F7 names the one left', panel2.includes('left: Trortur'), panel2);
   // a new game starts the count over
   G('ArchipelagoFH._internals.Toast.queue.length = 0; DataManager.setupNewGame(); $gameSwitches.setValue(3153, true)');
   enter(73); enter(1, 10, 10);
-  ok('new game: count back to 0', count() === 0, count());
-  ok('Terror & Starvation picked for a Fear & Hunger seed: warned',
-     toasts().includes('This seed is for Fear & Hunger, not Terror & Starvation'), toasts());
-  for (const t of troops) win(t);
+  ok('new game: kills of the earlier run still count', count() === N - 1, count());
+  ok('new run in Terror & Starvation, not hardcore: no warning', !toasts().includes('Hardcore seed'), toasts());
+  // hardcore seeds want the game's Hard mode
+  G('AP_hm = ArchipelagoFH.slotData.hard_mode; ArchipelagoFH.slotData.hard_mode = true');
+  ok('hardcore + Terror & Starvation: warned', G('ArchipelagoFH._internals.Difficulty.check()') === false &&
+     toasts().includes('Hardcore seed: play every run in Hard mode, not Terror & Starvation'), toasts());
+  G('$gameSwitches.setValue(2190, true)');
+  ok('hardcore + Hard mode: fine', G('ArchipelagoFH._internals.Difficulty.check()') === true);
+  G('ArchipelagoFH.slotData.hard_mode = AP_hm');
+  win(Object.keys(DATA.troops).find(t => DATA.troops[t][1].includes(lastId)));
   await sleep(1200);
   ok('every creature in one run: all of them and goal sent', count() === N && AP.goalSent === true, count());
   console.log(results.map(r => r.join(' | ')).join('\n'));

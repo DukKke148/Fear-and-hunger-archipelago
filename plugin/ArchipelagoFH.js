@@ -471,7 +471,7 @@
     Game.checkGoal();
   };
 
-  // difficulty: the seed only has the checks of the difficulty picked in the yaml (slot data "difficulty")
+  // hardcore: every run must be played in the game's Hard mode (slot data "hard_mode"); other seeds take any mode
   var Difficulty = { NAMES: ['Fear & Hunger', 'Terror & Starvation', 'Hard mode'] };
   // 0 Fear & Hunger, 1 Terror & Starvation, 2 Hard, -1 [Dungeon Nights] (Hard without STARVATION_MODE)
   Difficulty.current = function () {
@@ -481,51 +481,40 @@
     return starvation ? 1 : 0;
   };
   Difficulty.check = function () {
-    var want = AP.slotData.difficulty;
-    if (want === undefined || want === null) return true; // older seed
+    if (!AP.slotData.hard_mode) return true;
     var cur = Difficulty.current();
-    if (cur === null || cur === want) return true;
-    var msg = 'This seed is for ' + Difficulty.NAMES[want] + ', not ' + (cur < 0 ? '[Dungeon Nights]' : Difficulty.NAMES[cur]) +
-              ': some checks will be missing or impossible. Start a new game in ' + Difficulty.NAMES[want] + '.';
+    if (cur === null || cur === 2) return true;
+    var msg = 'Hardcore seed: play every run in Hard mode, not ' + (cur < 0 ? '[Dungeon Nights]' : Difficulty.NAMES[cur]) +
+              '. Start a new game in Hard mode.';
     Toast.push(msg);
     Log.warn(msg);
     return false;
   };
 
-  // genocide goal: every creature of the bestiary and every boss killed in the same run (kept in the run, so a
-  // new game starts over and loading a save goes back to what that save had killed)
+  // genocide goal: every creature of the bestiary and every boss killed at least once, over all runs: their checks
   var Genocide = {};
   Genocide.active = function () { return AP.slotData.goal === 1 && (AP.slotData.genocide_targets || []).length > 0; };
   Genocide.targets = function () { return AP.slotData.genocide_targets || []; };
-  Genocide.killed = function () {
-    var run = Run.get();
-    if (!run) return {};
-    if (!run.killed) run.killed = {};
-    return run.killed;
-  };
-  Genocide.count = function () {
-    var k = Genocide.killed();
-    return Genocide.targets().filter(function (id) { return k[id]; }).length;
-  };
-  Genocide.record = function (ids) {
-    if (!Genocide.active() || !Run.get()) return;
-    var k = Genocide.killed(), targets = Genocide.targets(), fresh = [];
-    ids.forEach(function (id) {
-      if (targets.indexOf(id) >= 0 && !k[id]) { k[id] = true; fresh.push(id); }
-    });
-    if (!fresh.length) return;
-    var names = fresh.map(function (id) { return (DATA.names[id] || String(id)).replace(/^(Bestiary: |Defeat )/, ''); });
-    Toast.push('Genocide: ' + Genocide.count() + '/' + targets.length + ' (' + names.join(', ') + ')');
-    Log.info('Genocide: ' + names.join(', ') + ' -> ' + Genocide.count() + '/' + targets.length);
-    Game.checkGoal();
-  };
+  Genocide.count = function () { return Genocide.targets().filter(function (id) { return Game.isChecked(id); }).length; };
   Genocide.left = function () {
-    var k = Genocide.killed();
-    return Genocide.targets().filter(function (id) { return !k[id]; })
+    return Genocide.targets().filter(function (id) { return !Game.isChecked(id); })
       .map(function (id) { return (DATA.names[id] || String(id)).replace(/^(Bestiary: |Defeat )/, ''); });
   };
+  // the targets of a fight not killed yet (call before checking the fight)
+  Genocide.fresh = function (ids) {
+    if (!Genocide.active()) return [];
+    var targets = Genocide.targets();
+    return ids.filter(function (id) { return targets.indexOf(id) >= 0 && !Game.isChecked(id); });
+  };
+  Genocide.announce = function (fresh) {
+    if (!fresh.length) return;
+    var names = fresh.map(function (id) { return (DATA.names[id] || String(id)).replace(/^(Bestiary: |Defeat )/, ''); });
+    Toast.push('Genocide: ' + Genocide.count() + '/' + Genocide.targets().length + ' (' + names.join(', ') + ')');
+    Log.info('Genocide: ' + names.join(', ') + ' -> ' + Genocide.count() + '/' + Genocide.targets().length);
+    Game.checkGoal();
+  };
 
-  // goal: every creature in one run (genocide), or the listed endings (e.g. A and S) when required_endings is set,
+  // goal: every creature (genocide), or the listed endings (e.g. A and S) when required_endings is set,
   // otherwise any N endings
   Game.checkGoal = function () {
     if (!AP.connected) return;
@@ -1293,9 +1282,10 @@
   function victoryChecks() {
     var info = DATA.troops[$gameTroop._troopId];
     if (info) {
+      var fresh = Genocide.fresh(info[1]);
       Game.check(info[0]);
       info[1].forEach(function (id) { Game.check(id); });
-      Genocide.record(info[1]);
+      Genocide.announce(fresh);
       var run = Run.get();
       if (info[2] && run && run.pending[run.tier].length && Run.firstBossWin(info)) {
         Run.spawn(run.pending[run.tier].shift(), 'Boss loot');
@@ -1507,7 +1497,7 @@
     }
     if (Genocide.active()) {
       var left = Genocide.left();
-      lines.push('Genocide this run: ' + Genocide.count() + '/' + Genocide.targets().length +
+      lines.push('Genocide: ' + Genocide.count() + '/' + Genocide.targets().length +
                  (left.length ? '  | left: ' + left.slice(0, 5).join(', ') + (left.length > 5 ? ' +' + (left.length - 5) : '') : ''));
     }
     var p = run.pending;

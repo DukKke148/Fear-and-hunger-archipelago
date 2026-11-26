@@ -42,7 +42,7 @@ while checks and unlocks carry over.
 Weapons and armors always have to be unlocked. If you pay for something you have not unlocked, you get a basic
 item instead.
 
-### Checks (308 by default, up to 338)
+### Checks (314 by default, up to 343)
 | Type | Count |
 |---|---|
 | Entering a zone for the first time | 68 |
@@ -58,9 +58,8 @@ item instead.
 | Cooking each dish for the first time (`cooking_checks`) | 9 |
 | Crafting each recipe for the first time (`crafting_checks`) | 19 |
 
-`recruit_checks` is on by default; marriage, cooking and crafting are off.
-The counts above are for every difficulty together; your `difficulty` removes the checks it does not have (6 in
-`fear_and_hunger`, 5 in `terror_and_starvation`, 8 in `hard`).
+`recruit_checks` is on by default; marriage, cooking and crafting are off. Hardcore removes the 8 checks the game's
+Hard mode does not have (see below).
 
 - **Recruits**: the Girl, Cahara, D'arce, Enki, Ragnvaldr, Le'garde, Nas'hrah and Moonless. Your starting
   character does not count.
@@ -120,7 +119,6 @@ Start from [`examples/Fear & Hunger.yaml`](examples/Fear%20&%20Hunger.yaml). Eve
 
 | Option | Values | Default |
 |---|---|---|
-| `difficulty` | the difficulty you will play: `fear_and_hunger` / `terror_and_starvation` / `hard` (see below) | fear_and_hunger |
 | `goal` | `endings` / `genocide` (see below) | endings |
 | `endings_required` | 1–5: how many endings among A, B, C, D, S | 1 |
 | `required_endings` | specific endings, e.g. `["A", "S"]` (overrides `endings_required`) | empty |
@@ -144,32 +142,25 @@ Start from [`examples/Fear & Hunger.yaml`](examples/Fear%20&%20Hunger.yaml). Eve
 | `trades_require_unlock` | trades and merchants only give unlocked results | true |
 | `cooking_requires_unlock` | cooking only gives unlocked dishes | false |
 | `alchemy_requires_unlock` | alchemy and crafting only make unlocked results | true |
-| `hardcore` | every difficulty option at its hardest (see below) | false |
+| `hardcore` | every difficulty option at its hardest, runs in the game's Hard mode (see below) | false |
 | `death_link` | Death Link | false |
 
 **Hardcore** overrides the rest of the file: `logic_difficulty: strict`, `randomize_keys: full`,
 `floor_access: per_floor`, `spawn_mode: anywhere`, `enemy_shuffle: chaos`, `weapon_shuffle: swap_items`, and
-trades, cooking and alchemy all require the unlock. It does not change your goal, which checks are on, traps or
-Death Link.
+trades, cooking and alchemy all require the unlock. Every run must also be played in the game's **Hard mode** (the
+game warns you otherwise): Hard has no Girl, Cahara, D'arce, Enki or Le'garde to recruit, so those 5 recruit
+checks, endings A and C and Asterisk are removed, and only endings B, D and S can be goals (asking for A or C stops
+the generation with a clear message). It does not change traps or Death Link.
 
-**Difficulty**: pick in the yaml the difficulty you will choose when you start a new game. Some checks only exist
-in some difficulties, so the ones you cannot reach are not in your seed:
-- `fear_and_hunger`: no Traces of Sylvian (`Defeat Sylvian`, The Void 2 is closed) and no S ending.
-- `terror_and_starvation`: everything except the S endings.
-- `hard`: the S endings, but the Girl, Cahara, D'arce, Enki and Le'garde cannot be recruited, so no ending A or C and
-  no Asterisk (the god Le'garde of ending C).
+**Game difficulty**: a multiworld can span several runs, each in the difficulty you pick, and checks carry over.
+Some checks need a given difficulty: the Traces of Sylvian (`Defeat Sylvian`) need Terror & Starvation or Hard
+(The Void 2 is closed otherwise), the S endings need Hard, and Hard has no Girl, Cahara, D'arce, Enki or Le'garde to
+recruit, so no ending A or C and no Asterisk. Pick the difficulty of each run for what you still need: a goal of
+A + S, for example, takes two runs.
 
-Your goal endings follow: A, B, C and D in the first two, B, D and S in `hard`. Asking for an ending your difficulty
-does not have stops the generation with a clear message. The game warns you if you start a game in another
-difficulty. [Dungeon Nights] is not supported.
-
-**Genocide** (`goal: genocide`): kill every creature of the dungeon at least once in the same run: the creatures of
-the bestiary and the bosses your difficulty has (51 in `fear_and_hunger`, 52 in the others). Gro-goroth and Asterisk
-are left out: they are the final fights of endings B and C, so they end the run and cannot both happen. The Void is
-only entered from the Throne of Ascension and has no way back, so its creatures (Blights, Molded, Greater blight,
-and Sylvian in The Void 2) come last. A new game starts the count over; loading a save goes back to what that save
-had killed. Each new creature shows `Genocide: n/51`, and F7 shows the count and the next ones left. Endings are
-then only checks.
+**Genocide** (`goal: genocide`): kill every creature of the dungeon at least once, over all your runs: the 33
+creatures of the bestiary and the 21 bosses (their checks). Each new creature shows `Genocide: n/54`, and F7 shows
+the count and the next ones left. Endings are then only checks.
 
 **Enemy shuffle** never moves the companion and end-game fights: they only happen on some routes or in some
 difficulties, so an enemy group sent there could never be fought.

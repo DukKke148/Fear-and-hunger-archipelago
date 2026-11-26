@@ -18,13 +18,12 @@ def names(world):
 
 class TestDefault(FearAndHungerTestBase):
     def test_location_count(self) -> None:
-        self.assertEqual(308, len([loc for loc in self.multiworld.get_locations() if loc.address]))
+        self.assertEqual(314, len([loc for loc in self.multiworld.get_locations() if loc.address]))
 
-    def test_fear_and_hunger_difficulty(self) -> None:
+    def test_every_difficulty_counts(self) -> None:
+        # runs can be played in different difficulties, and checks carry over
         n = names(self.world)
-        self.assertNotIn("Defeat Sylvian", n)  # The Void 2 needs Terror & Starvation or Hard
-        self.assertFalse({x for x in n if x.startswith("Ending S")})  # Hard only
-        for x in ("Ending A", "Ending C", "Bestiary: Asterisk", "Recruit the Girl"):
+        for x in ("Defeat Sylvian", "Ending S", "Ending A", "Ending C", "Bestiary: Asterisk", "Recruit the Girl"):
             self.assertIn(x, n)
 
     def test_removed_checks(self) -> None:
@@ -41,6 +40,15 @@ class TestDefault(FearAndHungerTestBase):
 
 class TestHardcore(FearAndHungerTestBase):
     options = {"hardcore": True}
+
+    def test_hard_mode_checks(self) -> None:
+        n = names(self.world)
+        for x in ("Ending A", "Ending C", "Bestiary: Asterisk", "Recruit the Girl", "Recruit Cahara",
+                  "Recruit D'arce", "Recruit Enki", "Recruit Le'garde"):
+            self.assertNotIn(x, n)
+        for x in ("Defeat Sylvian", "Ending S", "Ending B", "Ending D"):
+            self.assertIn(x, n)
+        self.assertTrue(self.world.fill_slot_data()["hard_mode"])
 
     def test_overrides_but_not_traps(self) -> None:
         o = self.world.options
@@ -70,70 +78,61 @@ class TestHardcoreManySeeds(FearAndHungerTestBase):
                 self.assertTrue(self.multiworld.can_beat_game(self.multiworld.state), f"seed {seed}")
 
 
-class TestHardcoreHardDifficultyManySeeds(TestHardcoreManySeeds):
-    options = {"hardcore": True, "difficulty": "hard"}
-
-
 class TestGenocide(FearAndHungerTestBase):
     options = {"goal": "genocide"}
 
     def test_targets(self) -> None:
         targets = self.world.fill_slot_data()["genocide_targets"]
-        expected = (creature_checks(self.world, "Bestiary: ") | creature_checks(self.world, "Defeat ")) - \
-            {"Defeat Gro-goroth", "Bestiary: Asterisk"}  # their fight ends the game (endings B and C)
-        self.assertEqual(51, len(targets))
+        expected = creature_checks(self.world, "Bestiary: ") | creature_checks(self.world, "Defeat ")
+        self.assertEqual(54, len(targets))
         self.assertEqual({self.multiworld.get_location(n, self.player).address for n in expected}, set(targets))
-
-
-class TestGenocideTerror(FearAndHungerTestBase):
-    options = {"goal": "genocide", "difficulty": "terror_and_starvation"}
-
-    def test_sylvian_counts(self) -> None:
-        targets = self.world.fill_slot_data()["genocide_targets"]
-        self.assertEqual(52, len(targets))
-        self.assertIn(self.multiworld.get_location("Defeat Sylvian", self.player).address, targets)
+        self.assertFalse(self.world.fill_slot_data()["hard_mode"])
 
 
 class TestGenocideHardcore(FearAndHungerTestBase):
-    options = {"goal": "genocide", "hardcore": True, "difficulty": "hard"}
+    options = {"goal": "genocide", "hardcore": True}
 
     def test_targets(self) -> None:
-        self.assertEqual(52, len(self.world.fill_slot_data()["genocide_targets"]))
+        self.assertEqual(53, len(self.world.fill_slot_data()["genocide_targets"]))  # no Asterisk in Hard mode
 
 
-class TestTerror(FearAndHungerTestBase):
-    options = {"difficulty": "terror_and_starvation", "endings_required": 4}
+class TestHardcoreEndingsRequired(FearAndHungerTestBase):
+    options = {"hardcore": True, "endings_required": 5}
 
-    def test_checks(self) -> None:
-        n = names(self.world)
-        self.assertIn("Defeat Sylvian", n)
-        self.assertFalse({x for x in n if x.startswith("Ending S")})
-
-
-class TestHard(FearAndHungerTestBase):
-    options = {"difficulty": "hard", "endings_required": 5}
-
-    def test_checks(self) -> None:
-        n = names(self.world)
-        for x in ("Ending A", "Ending C", "Bestiary: Asterisk", "Recruit the Girl", "Recruit Cahara",
-                  "Recruit D'arce", "Recruit Enki", "Recruit Le'garde"):
-            self.assertNotIn(x, n)
-        for x in ("Defeat Sylvian", "Ending S", "Ending S as Mercenary", "Ending B", "Ending D"):
-            self.assertIn(x, n)
-
-    def test_endings_required_is_capped(self) -> None:
+    def test_capped(self) -> None:
         self.assertEqual(3, self.world.fill_slot_data()["endings_required"])  # B, D and S
 
 
-class TestHardImpossibleEnding(FearAndHungerTestBase):
-    """Ending A cannot be reached in Hard: the generation stops with a clear message."""
-    options = {"difficulty": "hard", "required_endings": ["A"]}
+class TestHardcoreImpossibleEnding(FearAndHungerTestBase):
+    """Ending A cannot be reached in Hard mode: the generation stops with a clear message."""
+    options = {"hardcore": True, "required_endings": ["A"]}
     auto_construct = False
     run_default_tests = False
 
     def test_refused(self) -> None:
         with self.assertRaises(OptionError):
             self.world_setup()
+
+
+class TestEveryCheck(FearAndHungerTestBase):
+    options = {"recruit_checks": True, "marriage_check": True, "cooking_checks": True, "crafting_checks": True,
+               "endings_required": 5}
+
+    def test_location_count(self) -> None:
+        self.assertEqual(343, len([loc for loc in self.multiworld.get_locations() if loc.address]))
+
+
+class TestFewChecks(FearAndHungerTestBase):
+    options = {"troop_checks": False, "skill_checks": False, "recruit_checks": False}
+
+
+class TestFullKeysPerFloor(FearAndHungerTestBase):
+    options = {"randomize_keys": "full", "floor_access": "per_floor", "required_endings": ["A", "S"]}
+
+
+class TestShuffles(FearAndHungerTestBase):
+    options = {"enemy_shuffle": "chaos", "weapon_shuffle": "swap_items", "spawn_mode": "anywhere", "logic": "none",
+               "trap_percentage": 100}
 
 
 class TestChaosKeepsRouteFights(FearAndHungerTestBase):
@@ -145,24 +144,3 @@ class TestChaosKeepsRouteFights(FearAndHungerTestBase):
             if t["cls"] in ("companion", "endgame"):
                 self.assertNotIn(tid, moved)
                 self.assertNotIn(tid, moved.values())
-
-
-class TestEveryCheck(FearAndHungerTestBase):
-    options = {"recruit_checks": True, "marriage_check": True, "cooking_checks": True, "crafting_checks": True,
-               "endings_required": 5}
-
-    def test_location_count(self) -> None:
-        self.assertEqual(337, len([loc for loc in self.multiworld.get_locations() if loc.address]))
-
-
-class TestFewChecks(FearAndHungerTestBase):
-    options = {"troop_checks": False, "skill_checks": False, "recruit_checks": False}
-
-
-class TestFullKeysPerFloor(FearAndHungerTestBase):
-    options = {"randomize_keys": "full", "floor_access": "per_floor", "required_endings": ["A", "B"]}
-
-
-class TestShuffles(FearAndHungerTestBase):
-    options = {"enemy_shuffle": "chaos", "weapon_shuffle": "swap_items", "spawn_mode": "anywhere", "logic": "none",
-               "trap_percentage": 100}
