@@ -31,7 +31,7 @@ dungeon instead of going straight to your inventory.
 - Access items (Access: Part 2, Part 3, Ma'habre, End, or one per floor) gate the deeper parts of the dungeon.
 - Optional traps (bleeding, poison, infection, parasites, phobia, hunger, fear, torch out) and Death Link.
 - Optional enemy and weapon shuffles.
-- A hardcore mode that sets every difficulty option to its hardest value and is played in the game's Hard mode.
+- A hardcore mode that sets every difficulty option to its hardest value, played in Terror & Starvation or Hard.
 - The Hidden backyard and the Thickets need an unlocked Explosive vial, to blow up the collapsed hallway.
 
 ## What is the goal?

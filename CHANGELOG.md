@@ -25,9 +25,8 @@
 - PopTracker pack: checks per zone and floor with the generator's logic, and a progress panel (keys, access, skills,
   bosses, endings, S endings, companions, cooking, crafting). The game plugin shares the keys held in the current run
   with it through the server's data storage.
-- Hardcore also asks for the game's Hard mode in every run (the game warns you otherwise). Hard has no Girl,
-  Cahara, D'arce, Enki or Le'garde to recruit, so in hardcore those recruit checks, endings A and C and Asterisk are
-  removed, and only B, D and S can be goal endings.
+- Hardcore also asks for Terror & Starvation or Hard mode in every run, your choice for each run (the game warns
+  you otherwise).
 - New goal, `goal: genocide`: kill every creature (33 from the bestiary, 21 bosses) at least once, over all your
   runs. The count shows on each new kill and in the F7 panel.
 - Fixed: `enemy_shuffle: chaos` could send an enemy group into a companion or end-game fight, which only happens on

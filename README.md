@@ -58,8 +58,7 @@ item instead.
 | Cooking each dish for the first time (`cooking_checks`) | 9 |
 | Crafting each recipe for the first time (`crafting_checks`) | 19 |
 
-`recruit_checks` is on by default; marriage, cooking and crafting are off. Hardcore removes the 8 checks the game's
-Hard mode does not have (see below).
+`recruit_checks` is on by default; marriage, cooking and crafting are off.
 
 - **Recruits**: the Girl, Cahara, D'arce, Enki, Ragnvaldr, Le'garde, Nas'hrah and Moonless. Your starting
   character does not count.
@@ -142,15 +141,14 @@ Start from [`examples/Fear & Hunger.yaml`](examples/Fear%20&%20Hunger.yaml). Eve
 | `trades_require_unlock` | trades and merchants only give unlocked results | true |
 | `cooking_requires_unlock` | cooking only gives unlocked dishes | false |
 | `alchemy_requires_unlock` | alchemy and crafting only make unlocked results | true |
-| `hardcore` | every difficulty option at its hardest, runs in the game's Hard mode (see below) | false |
+| `hardcore` | every difficulty option at its hardest, runs in Terror & Starvation or Hard (see below) | false |
 | `death_link` | Death Link | false |
 
 **Hardcore** overrides the rest of the file: `logic_difficulty: strict`, `randomize_keys: full`,
 `floor_access: per_floor`, `spawn_mode: anywhere`, `enemy_shuffle: chaos`, `weapon_shuffle: swap_items`, and
-trades, cooking and alchemy all require the unlock. Every run must also be played in the game's **Hard mode** (the
-game warns you otherwise): Hard has no Girl, Cahara, D'arce, Enki or Le'garde to recruit, so those 5 recruit
-checks, endings A and C and Asterisk are removed, and only endings B, D and S can be goals (asking for A or C stops
-the generation with a clear message). It does not change traps or Death Link.
+trades, cooking and alchemy all require the unlock. Every run must also be played in **Terror & Starvation or
+Hard mode**, your choice for each run (the game warns you if you start in Fear & Hunger or [Dungeon Nights]). It
+does not change your goal, which checks are on, traps or Death Link.
 
 **Game difficulty**: a multiworld can span several runs, each in the difficulty you pick, and checks carry over.
 Some checks need a given difficulty: the Traces of Sylvian (`Defeat Sylvian`) need Terror & Starvation or Hard

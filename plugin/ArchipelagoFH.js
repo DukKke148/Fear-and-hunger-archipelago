@@ -471,7 +471,8 @@
     Game.checkGoal();
   };
 
-  // hardcore: every run must be played in the game's Hard mode (slot data "hard_mode"); other seeds take any mode
+  // hardcore: every run must be played in Terror & Starvation or Hard mode (slot data "hardcore"); other seeds
+  // take any mode
   var Difficulty = { NAMES: ['Fear & Hunger', 'Terror & Starvation', 'Hard mode'] };
   // 0 Fear & Hunger, 1 Terror & Starvation, 2 Hard, -1 [Dungeon Nights] (Hard without STARVATION_MODE)
   Difficulty.current = function () {
@@ -481,11 +482,11 @@
     return starvation ? 1 : 0;
   };
   Difficulty.check = function () {
-    if (!AP.slotData.hard_mode) return true;
+    if (!AP.slotData.hardcore) return true;
     var cur = Difficulty.current();
-    if (cur === null || cur === 2) return true;
-    var msg = 'Hardcore seed: play every run in Hard mode, not ' + (cur < 0 ? '[Dungeon Nights]' : Difficulty.NAMES[cur]) +
-              '. Start a new game in Hard mode.';
+    if (cur === null || cur === 1 || cur === 2) return true;
+    var msg = 'Hardcore seed: play every run in Terror & Starvation or Hard mode, not ' +
+              (cur < 0 ? '[Dungeon Nights]' : Difficulty.NAMES[cur]) + '. Start a new game in one of them.';
     Toast.push(msg);
     Log.warn(msg);
     return false;

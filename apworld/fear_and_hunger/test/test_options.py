@@ -1,7 +1,6 @@
 """Generation tests: each class builds a world with its options, then Archipelago's own checks run on it
 (everything reachable with all items, something reachable with none, a full fill that can beat the game)."""
 from Fill import distribute_items_restrictive
-from Options import OptionError
 from worlds.AutoWorld import call_all
 
 from . import FearAndHungerTestBase
@@ -41,14 +40,12 @@ class TestDefault(FearAndHungerTestBase):
 class TestHardcore(FearAndHungerTestBase):
     options = {"hardcore": True}
 
-    def test_hard_mode_checks(self) -> None:
+    def test_keeps_every_check(self) -> None:
+        # Terror & Starvation runs can do A, C and the recruits, Hard runs the S endings
         n = names(self.world)
-        for x in ("Ending A", "Ending C", "Bestiary: Asterisk", "Recruit the Girl", "Recruit Cahara",
-                  "Recruit D'arce", "Recruit Enki", "Recruit Le'garde"):
-            self.assertNotIn(x, n)
-        for x in ("Defeat Sylvian", "Ending S", "Ending B", "Ending D"):
+        for x in ("Ending A", "Ending C", "Ending S", "Bestiary: Asterisk", "Recruit the Girl", "Defeat Sylvian"):
             self.assertIn(x, n)
-        self.assertTrue(self.world.fill_slot_data()["hard_mode"])
+        self.assertTrue(self.world.fill_slot_data()["hardcore"])
 
     def test_overrides_but_not_traps(self) -> None:
         o = self.world.options
@@ -86,32 +83,14 @@ class TestGenocide(FearAndHungerTestBase):
         expected = creature_checks(self.world, "Bestiary: ") | creature_checks(self.world, "Defeat ")
         self.assertEqual(54, len(targets))
         self.assertEqual({self.multiworld.get_location(n, self.player).address for n in expected}, set(targets))
-        self.assertFalse(self.world.fill_slot_data()["hard_mode"])
+        self.assertFalse(self.world.fill_slot_data()["hardcore"])
 
 
 class TestGenocideHardcore(FearAndHungerTestBase):
-    options = {"goal": "genocide", "hardcore": True}
+    options = {"goal": "genocide", "hardcore": True, "required_endings": ["A", "S"]}
 
     def test_targets(self) -> None:
-        self.assertEqual(53, len(self.world.fill_slot_data()["genocide_targets"]))  # no Asterisk in Hard mode
-
-
-class TestHardcoreEndingsRequired(FearAndHungerTestBase):
-    options = {"hardcore": True, "endings_required": 5}
-
-    def test_capped(self) -> None:
-        self.assertEqual(3, self.world.fill_slot_data()["endings_required"])  # B, D and S
-
-
-class TestHardcoreImpossibleEnding(FearAndHungerTestBase):
-    """Ending A cannot be reached in Hard mode: the generation stops with a clear message."""
-    options = {"hardcore": True, "required_endings": ["A"]}
-    auto_construct = False
-    run_default_tests = False
-
-    def test_refused(self) -> None:
-        with self.assertRaises(OptionError):
-            self.world_setup()
+        self.assertEqual(54, len(self.world.fill_slot_data()["genocide_targets"]))
 
 
 class TestEveryCheck(FearAndHungerTestBase):

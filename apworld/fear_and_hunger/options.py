@@ -7,7 +7,7 @@ class Goal(Choice):
     """
     endings: reach endings (see Endings Required and Required Endings).
     genocide: kill every creature of the dungeon at least once, over all your runs: the 33 creatures of the
-              bestiary and the 21 bosses (Asterisk does not count in hardcore). Endings are then only checks.
+              bestiary and the 21 bosses. Endings are then only checks.
               Press F7 in the game to see how many are left.
     """
     display_name = "Goal"
@@ -20,8 +20,7 @@ class EndingsRequired(Range):
     """
     How many different endings you must reach to finish your goal (goal: endings).
     Endings A, B, C, D and S count (Ending E and the per-character S endings are checks only). S only exists in
-    the game's Hard mode, A and C do not: pick the game difficulty of each run accordingly. In hardcore (Hard mode
-    only), B, D and S count, and asking for more counts as all three.
+    the game's Hard mode, A and C do not: pick the game difficulty of each run accordingly.
     Several runs are allowed in one multiworld: checks and unlocks carry over, your inventory does not.
     """
     display_name = "Endings Required"
@@ -35,7 +34,7 @@ class RequiredEndings(OptionSet):
     Specific endings you must reach to finish your goal, for example ["A", "S"].
     Leave empty to use Endings Required (any endings) instead.
     Valid values: A, B, C, D, S (Ending E is a check, not a goal). S only exists in the game's Hard mode, A and C
-    do not, so they need different runs. In hardcore (Hard mode only), A and C are refused.
+    do not, so they need different runs.
     """
     display_name = "Required Endings"
     valid_keys = {"A", "B", "C", "D", "S"}
@@ -274,10 +273,8 @@ class Hardcore(Toggle):
     Sets every difficulty option to its hardest value, whatever the rest of this file says:
     logic_difficulty strict, randomize_keys full, floor_access per_floor, spawn_mode anywhere,
     enemy_shuffle chaos, weapon_shuffle swap_items, and trades, cooking and alchemy all require the unlock.
-    Every run must also be played in the game's Hard mode (the game warns you otherwise). Hard mode has no Girl,
-    Cahara, D'arce, Enki or Le'garde to recruit, so their recruit checks, endings A and C and Asterisk (the god
-    Le'garde of ending C) are removed, and only endings B, D and S can be goals.
-    Traps and Death Link are not changed.
+    Every run must also be played in Terror & Starvation or Hard mode, your choice for each run (the game warns
+    you otherwise). Goal, checks, traps and Death Link are not changed.
     """
     display_name = "Hardcore"
 

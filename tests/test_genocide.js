@@ -96,13 +96,18 @@ const lastGain = () => G('gained.length ? gained[gained.length - 1][0] : null');
   enter(73); enter(1, 10, 10);
   ok('new game: kills of the earlier run still count', count() === N - 1, count());
   ok('new run in Terror & Starvation, not hardcore: no warning', !toasts().includes('Hardcore seed'), toasts());
-  // hardcore seeds want the game's Hard mode
-  G('AP_hm = ArchipelagoFH.slotData.hard_mode; ArchipelagoFH.slotData.hard_mode = true');
-  ok('hardcore + Terror & Starvation: warned', G('ArchipelagoFH._internals.Difficulty.check()') === false &&
-     toasts().includes('Hardcore seed: play every run in Hard mode, not Terror & Starvation'), toasts());
+  // hardcore seeds want Terror & Starvation or Hard in every run
+  G('AP_hc = ArchipelagoFH.slotData.hardcore; ArchipelagoFH.slotData.hardcore = true');
+  const check = () => G('ArchipelagoFH._internals.Difficulty.check()');
+  ok('hardcore + Terror & Starvation: fine', check() === true && !toasts().includes('Hardcore seed'), toasts());
   G('$gameSwitches.setValue(2190, true)');
-  ok('hardcore + Hard mode: fine', G('ArchipelagoFH._internals.Difficulty.check()') === true);
-  G('ArchipelagoFH.slotData.hard_mode = AP_hm');
+  ok('hardcore + Hard mode: fine', check() === true);
+  G('$gameSwitches.setValue(3153, false)');
+  ok('hardcore + [Dungeon Nights]: warned', check() === false && toasts().includes('not [Dungeon Nights]'), toasts());
+  G('$gameSwitches.setValue(2190, false)');
+  ok('hardcore + Fear & Hunger: warned', check() === false &&
+     toasts().includes('Hardcore seed: play every run in Terror & Starvation or Hard mode, not Fear & Hunger'), toasts());
+  G('ArchipelagoFH.slotData.hardcore = AP_hc');
   win(Object.keys(DATA.troops).find(t => DATA.troops[t][1].includes(lastId)));
   await sleep(1200);
   ok('every creature in one run: all of them and goal sent', count() === N && AP.goalSent === true, count());
